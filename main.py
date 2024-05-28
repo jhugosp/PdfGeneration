@@ -13,6 +13,7 @@ template = env.get_template('sample_banco_bogota.html')
 bounds = [
     {
         """ Single registry that populates extract bounds information. (Banco de Bogotá)
+        
             extract_date:       Period bound by from_date - until_date (from_date - until_date YYYY format)
             from_date:          Initial date which takes tracking of transactions. (Month_Name dd format)
             until_date:         Final date which bound tracking of transactions. (Month_Name dd format)
