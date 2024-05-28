@@ -10,6 +10,7 @@
 <div id="extractInfo">
     {% for bound in bounds %}
     <div id="boundsDiv">
+        <p>{{ bound.extract_date }}</p>
         <p>{{ bound.from_date }}</p>
         <p>{{ bound.until_date }}</p>
         <p>{{ bound.account_number }}</p>
@@ -21,6 +22,8 @@
 </div>Summary">
     {% for element in elements %}
     <div id="summaryDiv">
+        <p>{{ element.extract_date }}</p>
+        <p>{{ element.initial_balance }}</p>
         <p>{{ element.total_additions }}</p>
         <p>{{ element.total_subtractions }}</p>
         <p>{{ element.iva_tax }}</p>
@@ -45,7 +48,7 @@
             <th>Saldo</th>
         </tr>
         {% for row in rows %}
-        <tr id="{{ row.id }}">
+        <tr>
             <td>{{ row.date }}</td>
             <td>{{ row.cod_trans }}</td>
             <td>{{ row.description }}</td>

@@ -13,9 +13,9 @@ template = env.get_template('sample_banco_bogota.html')
 bounds = [
     {
         """ Single registry that populates extract bounds information. (Banco de Bogotá)
-        
-            from_date:          Initial date which takes tracking of transactions.
-            until_date:         Final date which bound tracking of transactions.
+            extract_date:       Period bound by from_date - until_date (from_date - until_date YYYY format)
+            from_date:          Initial date which takes tracking of transactions. (Month_Name dd format)
+            until_date:         Final date which bound tracking of transactions. (Month_Name dd format)
             account_number:     Number of the account (000000000 length)
             account_type:       Type of account: Cuentas Privadas - Cuentas Públicas
             origin_code:        Code of origin (0000 length)
