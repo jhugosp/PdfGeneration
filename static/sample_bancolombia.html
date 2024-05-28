@@ -36,19 +36,19 @@
                                         <tbody>
                                         <tr>
                                             <td width="53" height="19" valign="middle" class="datosEncabeza">DESDE :</td>
-                                            <td colspan="2" valign="middle" class="datos">2023/12/31</td>
+                                            <td colspan="2" valign="middle" class="datos">{{ account_state.from_date }}</td>
                                             <td width="51" valign="middle" class="datosEncabeza">HASTA :</td>
-                                            <td width="120" valign="middle" class="datos">2024/03/31</td>
+                                            <td width="120" valign="middle" class="datos">{{ account_state.until_date }}</td>
                                         </tr>
                                         <tr>
                                             <td height="21" colspan="5" valign="middle" class="datosBasicos">CUENTA DE AHORROS</td>
                                         </tr>
                                         <tr>
                                             <td height="21" colspan="2" valign="middle" class="datosEncabeza">NÚMERO</td>
-                                            <td colspan="3" valign="middle" class="datos">79922465172&nbsp;</td>
+                                            <td colspan="3" valign="middle" class="datos">{{ account_state.account_number }}&nbsp;</td>
                                         </tr>
                                         <tr>
-                                            <td height="19" colspan="5" valign="middle" class="datos">SUCURSAL GIRÓN</td>
+                                            <td height="19" colspan="5" valign="middle" class="datos">{{ account_state.branch }}</td>
                                         </tr>
                                         <tr>
                                             <td height="1"></td>
@@ -170,38 +170,38 @@
                 <tr class="tituloCampo">
                     <td width="129" height="20" align="left" valign="middle" class="ctacte_resumen">SALDO ANTERIOR</td>
                     <td width="24" valign="middle" class="datos">$</td>
-                    <td width="154" align="right" valign="middle" class="datos">00,000,006.92</td>
+                    <td width="154" align="right" valign="middle" class="datos">{{ summary.previous_balance }}</td>
                     <td width="52">&nbsp;</td>
                     <td width="178" align="left" valign="middle" class="ctacte_resumen">SALDO PROMEDIO</td>
                     <td width="10" valign="middle" class="datos">$</td>
-                    <td width="124" align="right" valign="middle" class="datos">00,000,003</td>
+                    <td width="124" align="right" valign="middle" class="datos">{{ summary.average_balance }}</td>
                 </tr>
                 <tr class="tituloCampo">
                     <td height="18" align="left" valign="middle" class="ctacte_resumen">TOTAL ABONOS</td>
                     <td align="left" valign="middle" class="datos">$</td>
-                    <td align="right" valign="middle" class="datos">00,000,007.70</td>
+                    <td align="right" valign="middle" class="datos">{{ summary.total_additions }}</td>
                     <td></td>
                     <td align="left" valign="middle" class="ctacte_resumen">CUENTAS X COBRAR</td>
                     <td valign="middle" class="datos">$</td>
-                    <td align="right" valign="middle" class="datos">.00</td>
+                    <td align="right" valign="middle" class="datos">{{ summary.accounts_demand }}</td>
                 </tr>
                 <tr class="tituloCampo">
                     <td height="18" align="left" valign="middle" class="ctacte_resumen">TOTAL CARGOS</td>
                     <td valign="middle" class="datos">$</td>
-                    <td align="right" valign="middle" class="datos">00,000,000.07</td>
+                    <td align="right" valign="middle" class="datos">{{ summary.total_subtractions }}</td>
                     <td></td>
                     <td align="left" valign="middle" class="ctacte_resumen">VALOR INTERESES PAGADOS</td>
                     <td valign="middle" class="datos">$</td>
-                    <td align="right" valign="middle" class="datos">327.26</td>
+                    <td align="right" valign="middle" class="datos">{{ summary.interests_payed }}</td>
                 </tr>
                 <tr>
                     <td height="19" align="left" valign="middle" class="ctacte_resumen">SALDO ACTUAL</td>
                     <td valign="middle" class="datos">$</td>
-                    <td align="right" valign="middle" class="datos">00,000,004.55</td>
+                    <td align="right" valign="middle" class="datos">{{ summary.total_balance }}</td>
                     <td></td>
                     <td align="left" valign="middle" class="ctacte_resumen">RETEFUENTE</td>
                     <td valign="middle" class="datos">$</td>
-                    <td align="right" valign="middle" class="datos">.00</td>
+                    <td align="right" valign="middle" class="datos">{{ summary.source_retention }}</td>
                 </tr>
                 <tr>
                     <td height="0"></td>
@@ -224,6 +224,7 @@
         <td colspan="4" rowspan="2" valign="top">
             <table width="100%" border="0" cellpadding="0" cellspacing="0">
                 <tbody>
+
                 <tr>
                     <td width="75" height="30" align="center" valign="middle" class="datosEncabeza">FECHA</td>
                     <td width="9">&nbsp;</td>
@@ -247,435 +248,22 @@
                         <strong>SALDO</strong>
                     </td>
                 </tr>
+
+                {% for row in table_rows %}
                 <tr>
-                    <td height="14" align="center" valign="top" class="CtaCte2">8/01</td>
+                    <td height="14" align="center" valign="top" class="CtaCte2">{{ row.date }}</td>
                     <td></td>
-                    <td align="left" valign="top" class="CtaCte2">ABONO INTERESES AHORROS</td>
+                    <td align="left" valign="top" class="CtaCte2">{{ row.description }}</td>
                     <td></td>
-                    <td align="left" valign="top" class="CtaCte2"></td>
+                    <td align="left" valign="top" class="CtaCte2">{{ row.branch }}</td>
                     <td></td>
-                    <td align="center" valign="top" class="CtaCte2"></td>
+                    <td align="center" valign="top" class="CtaCte2">{{ row.dcto }}</td>
                     <td></td>
-                    <td align="right" valign="top" class="CtaCte2">3.92</td>
+                    <td align="right" valign="top" class="CtaCte2">{{ row.charge_amount }}</td>
                     <td></td>
-                    <td align="right" valign="top" class="CtaCte2">300,000.84</td>
+                    <td align="right" valign="top" class="CtaCte2">{{ row.present_balance }}</td>
                 </tr>
-                <tr>
-                    <td height="14" align="center" valign="top" class="CtaCte2">9/01</td>
-                    <td></td>
-                    <td align="left" valign="top" class="CtaCte2">PAGO PSE BANCO DAVIVIENDA SA</td>
-                    <td></td>
-                    <td align="left" valign="top" class="CtaCte2"></td>
-                    <td></td>
-                    <td align="center" valign="top" class="CtaCte2"></td>
-                    <td></td>
-                    <td align="right" valign="top" class="CtaCte2">-100,008.01</td>
-                    <td></td>
-                    <td align="right" valign="top" class="CtaCte2">200,002.83</td>
-                </tr>
-                <tr>
-                    <td height="14" align="center" valign="top" class="CtaCte2">11/01</td>
-                    <td></td>
-                    <td align="left" valign="top" class="CtaCte2">ABONO INTERESES AHORROS</td>
-                    <td></td>
-                    <td align="left" valign="top" class="CtaCte2"></td>
-                    <td></td>
-                    <td align="center" valign="top" class="CtaCte2"></td>
-                    <td></td>
-                    <td align="right" valign="top" class="CtaCte2">1.02</td>
-                    <td></td>
-                    <td align="right" valign="top" class="CtaCte2">200,003.85</td>
-                </tr>
-                <tr>
-                    <td height="14" align="center" valign="top" class="CtaCte2">12/01</td>
-                    <td></td>
-                    <td align="left" valign="top" class="CtaCte2">CUOTA MANEJO TARJETA DEBITO</td>
-                    <td></td>
-                    <td align="left" valign="top" class="CtaCte2"></td>
-                    <td></td>
-                    <td align="center" valign="top" class="CtaCte2"></td>
-                    <td></td>
-                    <td align="right" valign="top" class="CtaCte2">-00,000.00</td>
-                    <td></td>
-                    <td align="right" valign="top" class="CtaCte2">200,003.85</td>
-                </tr>
-                <tr>
-                    <td height="14" align="center" valign="top" class="CtaCte2">24/01</td>
-                    <td></td>
-                    <td align="left" valign="top" class="CtaCte2">ABONO INTERESES AHORROS</td>
-                    <td></td>
-                    <td align="left" valign="top" class="CtaCte2"></td>
-                    <td></td>
-                    <td align="center" valign="top" class="CtaCte2"></td>
-                    <td></td>
-                    <td align="right" valign="top" class="CtaCte2">4.16</td>
-                    <td></td>
-                    <td align="right" valign="top" class="CtaCte2">200,008.01</td>
-                </tr>
-                <tr>
-                    <td height="14" align="center" valign="top" class="CtaCte2">25/01</td>
-                    <td></td>
-                    <td align="left" valign="top" class="CtaCte2">PAGO INTERBANC WIZELINE SAS</td>
-                    <td></td>
-                    <td align="left" valign="top" class="CtaCte2"></td>
-                    <td></td>
-                    <td align="center" valign="top" class="CtaCte2"></td>
-                    <td></td>
-                    <td align="right" valign="top" class="CtaCte2">00,000,000.00</td>
-                    <td></td>
-                    <td align="right" valign="top" class="CtaCte2">00,000,008.01</td>
-                </tr>
-                <tr>
-                    <td height="14" align="center" valign="top" class="CtaCte2">25/01</td>
-                    <td></td>
-                    <td align="left" valign="top" class="CtaCte2">TRANSFERENCIA CTA SUC VIRTUAL</td>
-                    <td></td>
-                    <td align="left" valign="top" class="CtaCte2"></td>
-                    <td></td>
-                    <td align="center" valign="top" class="CtaCte2"></td>
-                    <td></td>
-                    <td align="right" valign="top" class="CtaCte2">00,000.00</td>
-                    <td></td>
-                    <td align="right" valign="top" class="CtaCte2">00,000,008.01</td>
-                </tr>
-                <tr>
-                    <td height="14" align="center" valign="top" class="CtaCte2">25/01</td>
-                    <td></td>
-                    <td align="left" valign="top" class="CtaCte2">ABONO INTERESES AHORROS</td>
-                    <td></td>
-                    <td align="left" valign="top" class="CtaCte2"></td>
-                    <td></td>
-                    <td align="center" valign="top" class="CtaCte2"></td>
-                    <td></td>
-                    <td align="right" valign="top" class="CtaCte2">7.86</td>
-                    <td></td>
-                    <td align="right" valign="top" class="CtaCte2">00,000,005.87</td>
-                </tr>
-                <tr>
-                    <td height="14" align="center" valign="top" class="CtaCte2">25/01</td>
-                    <td></td>
-                    <td align="left" valign="top" class="CtaCte2">PAGO SUC VIRT TC VISA</td>
-                    <td></td>
-                    <td align="left" valign="top" class="CtaCte2"></td>
-                    <td></td>
-                    <td align="center" valign="top" class="CtaCte2"></td>
-                    <td></td>
-                    <td align="right" valign="top" class="CtaCte2">-0,000,009.00</td>
-                    <td></td>
-                    <td align="right" valign="top" class="CtaCte2">00,000,006.87</td>
-                </tr>
-                <tr>
-                    <td height="14" align="center" valign="top" class="CtaCte2">25/01</td>
-                    <td></td>
-                    <td align="left" valign="top" class="CtaCte2">PAGO PSE P.A. ADDI</td>
-                    <td></td>
-                    <td align="left" valign="top" class="CtaCte2"></td>
-                    <td></td>
-                    <td align="center" valign="top" class="CtaCte2"></td>
-                    <td></td>
-                    <td align="right" valign="top" class="CtaCte2">-300,002.00</td>
-                    <td></td>
-                    <td align="right" valign="top" class="CtaCte2">00,000,004.87</td>
-                </tr>
-                <tr>
-                    <td height="14" align="center" valign="top" class="CtaCte2">25/01</td>
-                    <td></td>
-                    <td align="left" valign="top" class="CtaCte2">PAGO PSE Portal Zona Pagos BB</td>
-                    <td></td>
-                    <td align="left" valign="top" class="CtaCte2"></td>
-                    <td></td>
-                    <td align="center" valign="top" class="CtaCte2"></td>
-                    <td></td>
-                    <td align="right" valign="top" class="CtaCte2">-00,000.00</td>
-                    <td></td>
-                    <td align="right" valign="top" class="CtaCte2">00,000,004.87</td>
-                </tr>
-                <tr>
-                    <td height="14" align="center" valign="top" class="CtaCte2">25/01</td>
-                    <td></td>
-                    <td align="left" valign="top" class="CtaCte2">PAGO PSE NU COLOMBIA SA</td>
-                    <td></td>
-                    <td align="left" valign="top" class="CtaCte2"></td>
-                    <td></td>
-                    <td align="center" valign="top" class="CtaCte2"></td>
-                    <td></td>
-                    <td align="right" valign="top" class="CtaCte2">-100,004.45</td>
-                    <td></td>
-                    <td align="right" valign="top" class="CtaCte2">00,000,000.42</td>
-                </tr>
-                <tr>
-                    <td height="14" align="center" valign="top" class="CtaCte2">25/01</td>
-                    <td></td>
-                    <td align="left" valign="top" class="CtaCte2">PAGO PSE Acueducto Metropolit</td>
-                    <td></td>
-                    <td align="left" valign="top" class="CtaCte2"></td>
-                    <td></td>
-                    <td align="center" valign="top" class="CtaCte2"></td>
-                    <td></td>
-                    <td align="right" valign="top" class="CtaCte2">-100,000.00</td>
-                    <td></td>
-                    <td align="right" valign="top" class="CtaCte2">00,000,000.42</td>
-                </tr>
-                <tr>
-                    <td height="14" align="center" valign="top" class="CtaCte2">25/01</td>
-                    <td></td>
-                    <td align="left" valign="top" class="CtaCte2">PAGO SUC VIRT TC AMEX PESOS</td>
-                    <td></td>
-                    <td align="left" valign="top" class="CtaCte2">GIRÓN</td>
-                    <td></td>
-                    <td align="center" valign="top" class="CtaCte2"></td>
-                    <td></td>
-                    <td align="right" valign="top" class="CtaCte2">-0,000,007.00</td>
-                    <td></td>
-                    <td align="right" valign="top" class="CtaCte2">00,000,003.42</td>
-                </tr>
-                <tr>
-                    <td height="14" align="center" valign="top" class="CtaCte2">25/01</td>
-                    <td></td>
-                    <td align="left" valign="top" class="CtaCte2">PAGO SUC VIRT TC AMEX DOLAR</td>
-                    <td></td>
-                    <td align="left" valign="top" class="CtaCte2">GIRÓN</td>
-                    <td></td>
-                    <td align="center" valign="top" class="CtaCte2"></td>
-                    <td></td>
-                    <td align="right" valign="top" class="CtaCte2">-600,002.05</td>
-                    <td></td>
-                    <td align="right" valign="top" class="CtaCte2">00,000,001.37</td>
-                </tr>
-                <tr>
-                    <td height="14" align="center" valign="top" class="CtaCte2">26/01</td>
-                    <td></td>
-                    <td align="left" valign="top" class="CtaCte2">TRANSFERENCIA CTA SUC VIRTUAL</td>
-                    <td></td>
-                    <td align="left" valign="top" class="CtaCte2"></td>
-                    <td></td>
-                    <td align="center" valign="top" class="CtaCte2"></td>
-                    <td></td>
-                    <td align="right" valign="top" class="CtaCte2">00,000.00</td>
-                    <td></td>
-                    <td align="right" valign="top" class="CtaCte2">00,000,001.37</td>
-                </tr>
-                <tr>
-                    <td height="14" align="center" valign="top" class="CtaCte2">26/01</td>
-                    <td></td>
-                    <td align="left" valign="top" class="CtaCte2">ABONO INTERESES AHORROS</td>
-                    <td></td>
-                    <td align="left" valign="top" class="CtaCte2"></td>
-                    <td></td>
-                    <td align="center" valign="top" class="CtaCte2"></td>
-                    <td></td>
-                    <td align="right" valign="top" class="CtaCte2">7.11</td>
-                    <td></td>
-                    <td align="right" valign="top" class="CtaCte2">00,000,008.48</td>
-                </tr>
-                <tr>
-                    <td height="14" align="center" valign="top" class="CtaCte2">26/01</td>
-                    <td></td>
-                    <td align="left" valign="top" class="CtaCte2">PAGO PSE BANCO DAVIVIENDA SA</td>
-                    <td></td>
-                    <td align="left" valign="top" class="CtaCte2"></td>
-                    <td></td>
-                    <td align="center" valign="top" class="CtaCte2"></td>
-                    <td></td>
-                    <td align="right" valign="top" class="CtaCte2">-200,007.43</td>
-                    <td></td>
-                    <td align="right" valign="top" class="CtaCte2">00,000,001.05</td>
-                </tr>
-                <tr>
-                    <td height="14" align="center" valign="top" class="CtaCte2">26/01</td>
-                    <td></td>
-                    <td align="left" valign="top" class="CtaCte2">RETIRO CORRESPONSAL CB</td>
-                    <td></td>
-                    <td align="left" valign="top" class="CtaCte2">CANAL CORRESPONSA</td>
-                    <td></td>
-                    <td align="center" valign="top" class="CtaCte2"></td>
-                    <td></td>
-                    <td align="right" valign="top" class="CtaCte2">-300,000.00</td>
-                    <td></td>
-                    <td align="right" valign="top" class="CtaCte2">00,000,001.05</td>
-                </tr>
-                <tr>
-                    <td height="14" align="center" valign="top" class="CtaCte2">27/01</td>
-                    <td></td>
-                    <td align="left" valign="top" class="CtaCte2">ABONO INTERESES AHORROS</td>
-                    <td></td>
-                    <td align="left" valign="top" class="CtaCte2"></td>
-                    <td></td>
-                    <td align="center" valign="top" class="CtaCte2"></td>
-                    <td></td>
-                    <td align="right" valign="top" class="CtaCte2">7.10</td>
-                    <td></td>
-                    <td align="right" valign="top" class="CtaCte2">00,000,008.15</td>
-                </tr>
-                <tr>
-                    <td height="14" align="center" valign="top" class="CtaCte2">27/01</td>
-                    <td></td>
-                    <td align="left" valign="top" class="CtaCte2">COMPRA EN FALABELLA</td>
-                    <td></td>
-                    <td align="left" valign="top" class="CtaCte2"></td>
-                    <td></td>
-                    <td align="center" valign="top" class="CtaCte2"></td>
-                    <td></td>
-                    <td align="right" valign="top" class="CtaCte2">-0,000.00</td>
-                    <td></td>
-                    <td align="right" valign="top" class="CtaCte2">00,000,008.15</td>
-                </tr>
-                <tr>
-                    <td height="14" align="center" valign="top" class="CtaCte2">28/01</td>
-                    <td></td>
-                    <td align="left" valign="top" class="CtaCte2">PAGO SUC VIRT TC VISA</td>
-                    <td></td>
-                    <td align="left" valign="top" class="CtaCte2"></td>
-                    <td></td>
-                    <td align="center" valign="top" class="CtaCte2"></td>
-                    <td></td>
-                    <td align="right" valign="top" class="CtaCte2">-1,600,000.00</td>
-                    <td></td>
-                    <td align="right" valign="top" class="CtaCte2">00,000,008.15</td>
-                </tr>
-                <tr>
-                    <td height="14" align="center" valign="top" class="CtaCte2">28/01</td>
-                    <td></td>
-                    <td align="left" valign="top" class="CtaCte2">PAGO PSE Portal Zona Pagos BB</td>
-                    <td></td>
-                    <td align="left" valign="top" class="CtaCte2"></td>
-                    <td></td>
-                    <td align="center" valign="top" class="CtaCte2"></td>
-                    <td></td>
-                    <td align="right" valign="top" class="CtaCte2">-0,000,000.39</td>
-                    <td></td>
-                    <td align="right" valign="top" class="CtaCte2">0,000,007.76</td>
-                </tr>
-                <tr>
-                    <td height="14" align="center" valign="top" class="CtaCte2">30/01</td>
-                    <td></td>
-                    <td align="left" valign="top" class="CtaCte2">ABONO INTERESES AHORROS</td>
-                    <td></td>
-                    <td align="left" valign="top" class="CtaCte2"></td>
-                    <td></td>
-                    <td align="center" valign="top" class="CtaCte2"></td>
-                    <td></td>
-                    <td align="right" valign="top" class="CtaCte2">12.33</td>
-                    <td></td>
-                    <td align="right" valign="top" class="CtaCte2">0,000,000.09</td>
-                </tr>
-                <tr>
-                    <td height="14" align="center" valign="top" class="CtaCte2">31/01</td>
-                    <td></td>
-                    <td align="left" valign="top" class="CtaCte2">ABONO INTERESES AHORROS</td>
-                    <td></td>
-                    <td align="left" valign="top" class="CtaCte2"></td>
-                    <td></td>
-                    <td align="center" valign="top" class="CtaCte2"></td>
-                    <td></td>
-                    <td align="right" valign="top" class="CtaCte2">2.10</td>
-                    <td></td>
-                    <td align="right" valign="top" class="CtaCte2">0,000,002.19</td>
-                </tr>
-                <tr>
-                    <td height="14" align="center" valign="top" class="CtaCte2">31/01</td>
-                    <td></td>
-                    <td align="left" valign="top" class="CtaCte2">PAGO PSE Banco de Bogota</td>
-                    <td></td>
-                    <td align="left" valign="top" class="CtaCte2"></td>
-                    <td></td>
-                    <td align="center" valign="top" class="CtaCte2"></td>
-                    <td></td>
-                    <td align="right" valign="top" class="CtaCte2">-0,000,001.00</td>
-                    <td></td>
-                    <td align="right" valign="top" class="CtaCte2">0,000,001.19</td>
-                </tr>
-                <tr>
-                    <td height="14" align="center" valign="top" class="CtaCte2">4/02</td>
-                    <td></td>
-                    <td align="left" valign="top" class="CtaCte2">ABONO INTERESES AHORROS</td>
-                    <td></td>
-                    <td align="left" valign="top" class="CtaCte2"></td>
-                    <td></td>
-                    <td align="center" valign="top" class="CtaCte2"></td>
-                    <td></td>
-                    <td align="right" valign="top" class="CtaCte2">8.40</td>
-                    <td></td>
-                    <td align="right" valign="top" class="CtaCte2">0,000,009.59</td>
-                </tr>
-                <tr>
-                    <td height="14" align="center" valign="top" class="CtaCte2">5/02</td>
-                    <td></td>
-                    <td align="left" valign="top" class="CtaCte2">PAGO DE TERC GALEV SAS</td>
-                    <td></td>
-                    <td align="left" valign="top" class="CtaCte2"></td>
-                    <td></td>
-                    <td align="center" valign="top" class="CtaCte2"></td>
-                    <td></td>
-                    <td align="right" valign="top" class="CtaCte2">0,000,000.00</td>
-                    <td></td>
-                    <td align="right" valign="top" class="CtaCte2">0,000,009.59</td>
-                </tr>
-                <tr>
-                    <td height="14" align="center" valign="top" class="CtaCte2">5/02</td>
-                    <td></td>
-                    <td align="left" valign="top" class="CtaCte2">ABONO INTERESES AHORROS</td>
-                    <td></td>
-                    <td align="left" valign="top" class="CtaCte2"></td>
-                    <td></td>
-                    <td align="center" valign="top" class="CtaCte2"></td>
-                    <td></td>
-                    <td align="right" valign="top" class="CtaCte2">3.70</td>
-                    <td></td>
-                    <td align="right" valign="top" class="CtaCte2">0,000,003.29</td>
-                </tr>
-                <tr>
-                    <td height="14" align="center" valign="top" class="CtaCte2">5/02</td>
-                    <td></td>
-                    <td align="left" valign="top" class="CtaCte2">PAGO PSE BANCO DAVIVIENDA SA</td>
-                    <td></td>
-                    <td align="left" valign="top" class="CtaCte2"></td>
-                    <td></td>
-                    <td align="center" valign="top" class="CtaCte2"></td>
-                    <td></td>
-                    <td align="right" valign="top" class="CtaCte2">-000,000.91</td>
-                    <td></td>
-                    <td align="right" valign="top" class="CtaCte2">0,000,002.38</td>
-                </tr>
-                <tr>
-                    <td height="14" align="center" valign="top" class="CtaCte2">5/02</td>
-                    <td></td>
-                    <td align="left" valign="top" class="CtaCte2">PAGO PSE Portal Zona Pagos BB</td>
-                    <td></td>
-                    <td align="left" valign="top" class="CtaCte2"></td>
-                    <td></td>
-                    <td align="center" valign="top" class="CtaCte2"></td>
-                    <td></td>
-                    <td align="right" valign="top" class="CtaCte2">-300,002.38</td>
-                    <td></td>
-                    <td align="right" valign="top" class="CtaCte2">0,000,000.00</td>
-                </tr>
-                <tr>
-                    <td height="14" align="center" valign="top" class="CtaCte2">5/02</td>
-                    <td></td>
-                    <td align="left" valign="top" class="CtaCte2">PAGO PSE NU COLOMBIA SA</td>
-                    <td></td>
-                    <td align="left" valign="top" class="CtaCte2"></td>
-                    <td></td>
-                    <td align="center" valign="top" class="CtaCte2"></td>
-                    <td></td>
-                    <td align="right" valign="top" class="CtaCte2">-200,003.74</td>
-                    <td></td>
-                    <td align="right" valign="top" class="CtaCte2">0,000,006.26</td>
-                </tr>
-                <tr>
-                    <td height="14" align="center" valign="top" class="CtaCte2">6/02</td>
-                    <td></td>
-                    <td align="left" valign="top" class="CtaCte2">ABONO INTERESES AHORROS</td>
-                    <td></td>
-                    <td align="left" valign="top" class="CtaCte2"></td>
-                    <td></td>
-                    <td align="center" valign="top" class="CtaCte2"></td>
-                    <td></td>
-                    <td align="right" valign="top" class="CtaCte2">2.43</td>
-                    <td></td>
-                    <td align="right" valign="top" class="CtaCte2">0,000,008.69</td>
-                </tr>
+                {% end for %}
                 </tbody>
             </table>
         </td>
