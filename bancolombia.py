@@ -44,17 +44,35 @@ def create_branches(transaction_amount):
     return branches
 
 
-def generate_formatted_number(transactions_amount):
-
+def calculate_balance(transactions_amount: int, initial_balance: float) -> tuple:
+    present_balances = []
     values_transactions = []
+    previous_balance = initial_balance
+
     min_value = 0.01
     max_value = 9_999_999.99
 
     for _ in range(transactions_amount):
+        possibility = random.random()
         random_number = random.uniform(min_value, max_value)
-        values_transactions.append(f"{random_number:,.2f}")
 
-    return values_transactions
+        if possibility < 0.5:
+            if random_number > previous_balance:
+                new_value = random.uniform(min_value, previous_balance) * (-1)
+                previous_balance += new_value
+                values_transactions.append(f"{new_value:,.2f}")
+            else:
+                random_number *= (-1)
+                previous_balance += random_number
+                values_transactions.append(f"{random_number:,.2f}")
+
+        else:
+            previous_balance += random_number
+            values_transactions.append(f"{random_number:,.2f}")
+
+        present_balances.append(f"{previous_balance:,.2f}")
+
+    return present_balances, values_transactions
 
 
 def write_results_to_file(template_out):
@@ -76,6 +94,6 @@ if __name__ == "__main__":
     env = Environment(loader=file_loader)
     template = env.get_template('sample_banco_bogota.html')
     transactions = 10
-    print(f"{give_date(transactions)} \n{create_descriptions(transactions)} \n{create_branches(transactions)} \n")
+
 
     # write_results_to_file(template_out=template)
