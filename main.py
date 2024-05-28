@@ -22,6 +22,7 @@ bounds = [
             origin_code:        Code of origin (0000 length)
             city:               City of registry (?)
         """
+        'extract_date': give_date(year=2023, month=1, day=1),
         'from_date': give_date(year=2023, month=1, day=1),
         'until_date': give_date(year=2024, month=1, day=31),
         'account_number': '123456789',
