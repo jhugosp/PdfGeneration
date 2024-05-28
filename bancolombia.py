@@ -1,8 +1,9 @@
 from jinja2 import Environment, FileSystemLoader
 from templates.bancolombia_model import Bancolombia
+from constants.index import description_transactions
+import pdfkit
 import random
 import datetime
-from constants.index import description_transactions
 
 model_templates = Bancolombia()
 
@@ -122,6 +123,9 @@ def write_results_to_file(account_state_result, table_rows, summary):
 
     with open('static/result.html', 'w') as f:
         f.write(output)
+
+    pdfkit.from_file(input="static/result.html", output_path='result.pdf')
+
     print("HTML file generated successfully!")
 
 
