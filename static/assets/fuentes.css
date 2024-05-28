@@ -1,0 +1,176 @@
+.datos
+{
+	FONT-WEIGHT: lighter;
+	FONT-SIZE: 12px;
+	COLOR: #000000;
+	FONT-FAMILY: "Courier New", Courier, mono;
+	vertical-align: middle;
+}
+.detalles
+{
+    FONT-SIZE: 10px;
+    COLOR: #000000;
+    FONT-STYLE: normal;
+    FONT-FAMILY: "Courier New", Courier, mono
+}
+.valores
+{
+    BACKGROUND-POSITION: center center;
+    FONT-SIZE: 9px;
+    COLOR: #000000;
+    FONT-FAMILY: "Courier New", Courier, mono
+}
+.titulosDatos
+{
+    FONT-WEIGHT: normal;
+    FONT-SIZE: 8px;
+    COLOR: #000000;
+    FONT-FAMILY: Arial, Helvetica, sans-serif
+}
+.datosBasicos
+{
+    FONT-WEIGHT: normal;
+    FONT-SIZE: 12px;
+    COLOR: #000000;
+    FONT-FAMILY: Geneva, Arial, Helvetica, sans-serif
+}
+.mensaje
+{
+    FONT-SIZE: 10px;
+    COLOR: black;
+    FONT-STYLE: normal;
+    FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif
+}
+.tituloCampo {
+	font-family: "Courier New", Courier, monospace;
+	font-size: 12px;
+	font-style: normal;
+	font-weight: bolder;
+}
+.detalleArial {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 8px;
+}
+.CtaCte1 {
+	font-family: "Courier New", Courier, mono;
+	font-size: 10px;
+	line-height: 13px;
+	font-style: normal;
+
+}
+.CtaCte2 {
+	font-family: "Courier New", Courier, mono;
+	font-size: 10px;
+	font-style: normal;
+	line-height: 13px;
+}
+.detalleTC2 {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 8px;
+	line-height: 11px;
+
+}
+.mensajeConsolida {
+	font-family: "Courier New", Courier, mono;
+	font-size: 11px;
+	font-weight: bold;
+	line-height: 28px;
+}
+.mensajeConsolidado {
+	font-family: "Courier New", Courier, mono;
+	font-size: 11px;
+	line-height: 18px;
+	font-weight: bold;
+}
+.mensajeProducto {
+	font-family: "Courier New", Courier, mono;
+	font-size: 10px;
+	line-height: 18px;
+	font-weight: bold;
+}
+.DatosFiducuenta {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-weight: bolder;
+	color: #000000;
+}
+.DetalleFiduCta {
+	font-family: "Courier New", Courier, mono;
+	font-size: 10px;
+	font-style: normal;
+	line-height: 16px;
+}
+.DetalleAudioPres {
+	font-family: "Courier New", Courier, mono;
+	font-size: 10px;
+	font-style: normal;
+	line-height: 21px;
+}
+.detallexPto {
+	font-family: "Courier New", Courier, mono;
+	font-size: 12px;
+	font-weight: normal;
+	text-align: right;
+	vertical-align: middle;
+	color: #000000;
+}
+.tituloPrdcto {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 14px;
+	font-weight: bolder;
+	text-align: center;
+	vertical-align: middle;
+}
+.ctacte_resumen {
+	font-family: "Courier New", Courier, mono;
+	font-size: 11px;
+	font-style: italic;
+	font-weight: normal;
+	color: #000000;
+	text-transform: uppercase;
+}
+.datosEncabeza {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	font-weight: normal;
+	text-transform: uppercase;
+	color: #000000;
+	vertical-align: middle;
+}
+.DetalleAudio2 {
+	font-family: "Courier New", Courier, mono;
+	font-size: 10px;
+	font-style: normal;
+	line-height: 26px;
+	color: #000000;
+}
+.DetallePensiones {
+	font-family: "Courier New", Courier, mono;
+	font-size: 8px;
+	font-style: normal;
+	line-height: 18px;
+	color: #000000;
+}
+.DetallePensiones2 {
+	font-family: "Courier New", Courier, mono;
+	font-size: 8px;
+	line-height: 25px;
+	color: #000000;
+}
+.encabezado {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 14px;
+}
+.mensaje_9 {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 9px;
+	color: #000000;
+	word-spacing: 0px;
+}
+.Detallefiducta_Pag2 {
+	font-family: "Courier New", Courier, monospace;
+	font-size: 10px;
+	line-height: 20px;
+	font-weight: normal;
+	color: #000000;
+}
