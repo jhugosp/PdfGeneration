@@ -32,7 +32,7 @@ class Bancolombia:
                 accounts_demand:    4*1000 bank rule. Calculate as a deduction/negative value. Paint as so
                 interests_payed:    Investigate what this field does, how does it affect calculations.
                 source_retention:   Investigate what this field does, how does it affect calculations.
-                present_balance:    This field is to be calculated and appended outside declaration as a last field
+                total_balance:    This field is to be calculated and appended outside declaration as a last field
         """
         return {
             'previous_balance': 100.00,
@@ -42,7 +42,7 @@ class Bancolombia:
             'accounts_demand': 0.00,
             'interests_payed': 0.00,
             'source_retention': 0.00,
-            'present_balance': 0.00
+            'total_balance': 0.00
         }
 
     @staticmethod
@@ -54,7 +54,7 @@ class Bancolombia:
             description:        Description of transactions mentions place of transaction as well as card number.
             city:               City transaction took place (?)
             office_channel:     Office/channel in which transaction took place.
-            document:           Document of transaction holder.
+            dcto:               Discount of transaction.
             charge_amount:      Charge of transaction. Calculate as a deduction/negative value. Paint as so.
                                 Needs to be in accordance with total_subtractions field in elements array.
             balance:            Present balance held in account. Initial value comes from elements.initial_balance and
@@ -66,7 +66,7 @@ class Bancolombia:
             'date': '',
             'description': '',
             'branch': '',
-            'document': '',
+            'dcto': '',
             'charge_amount': 0.00,
             'present_balance': 0.00
         }

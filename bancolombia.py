@@ -4,11 +4,10 @@ import random
 import datetime
 from constants.index import description_transactions
 
-
 model_templates = Bancolombia()
 
 
-def give_date(transactions_amount):
+def create_dates(transactions_amount):
     """Returns a deposit date randomly based on an amount of dates to give
 
         transactions_amount: Amount of dates to be generated based on the transactions to generate.
@@ -75,25 +74,78 @@ def calculate_balance(transactions_amount: int, initial_balance: float) -> tuple
     return present_balances, values_transactions
 
 
-def write_results_to_file(template_out):
-    output = template_out.render()
+def unify_results(dates, descriptions, branches, balances, transactions_values, transactions_amount):
+    table_rows: list = []
+    for _ in range(transactions_amount):
+        row_template: dict = model_templates.row_template()
+        row_template['date'] = dates[_]
+        row_template['description'] = descriptions[_]
+        row_template['branch'] = branches[_]
+        row_template['dcto'] = 0.00
+        row_template['charge_amount'] = transactions_values[_]
+        row_template['present_balance'] = balances[_]
+
+        table_rows.append(row_template)
+
+    return table_rows
+
+
+def create_summary(balances, transactions_values, transactions_amount, first_balance):
+    total_balance = float(balances[len(balances) - 1].replace(',', ''))
+    total_additions = 0
+    total_subtractions = 0
+
+    for value in transactions_values:
+        float_value = float(value.replace(',', ''))
+
+        if float_value < 0:
+            total_subtractions += float_value
+        else:
+            total_additions += float_value
+
+    summary_template = model_templates.summary_template()
+
+    summary_template['previous_balance'] = first_balance
+    summary_template['total_additions'] = f"{total_additions:,.2f}"
+    summary_template['total_subtractions'] = f"{total_subtractions:,.2f}"
+    summary_template['average_balance'] = f"{(total_balance / transactions_amount):.2f}"
+    summary_template['total_balance'] = f"{total_balance:.2f}"
+
+    return summary_template
+
+
+def write_results_to_file(account_state_result, table_rows, summary):
+    file_loader = FileSystemLoader('static')
+    env = Environment(loader=file_loader)
+    template_out = env.get_template('sample_bancolombia.html')
+    output = template_out.render(account_state=account_state_result, table_rows=table_rows, summary=summary)
 
     with open('static/result.html', 'w') as f:
         f.write(output)
     print("HTML file generated successfully!")
 
 
-account_state = model_templates.account_state_template()
-summary = model_templates.summary_template()
-table_rows = [
-    model_templates.row_template()
-]
-
 if __name__ == "__main__":
-    file_loader = FileSystemLoader('static')
-    env = Environment(loader=file_loader)
-    template = env.get_template('sample_banco_bogota.html')
-    transactions = 10
+    initial_balance = model_templates.summary_template().get("previous_balance")
+    transactions = random.randint(5, 10)
 
+    result_dates = create_dates(transactions)
+    result_descriptions = create_descriptions(transactions)
+    result_branches = create_branches(transactions)
+    result_balances, result_transactions_values = calculate_balance(transactions, initial_balance)
 
-    # write_results_to_file(template_out=template)
+    final_template_rows = unify_results(
+        result_dates,
+        result_descriptions,
+        result_branches,
+        result_balances,
+        result_transactions_values,
+        transactions)
+
+    final_summary = create_summary(result_balances, result_transactions_values, transactions, initial_balance)
+
+    write_results_to_file(
+        account_state_result=model_templates.account_state_template(),
+        table_rows=final_template_rows,
+        summary=final_summary
+    )
