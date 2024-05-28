@@ -87,7 +87,7 @@ table_rows = [
 
 output = template.render(elements=elements, bounds=bounds, rows=table_rows)
 
-with open('static/sample_banco_bogota.html', 'w') as f:
+with open('static/result.html', 'w') as f:
     f.write(output)
 
 print("HTML file generated successfully!")
