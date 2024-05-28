@@ -2,6 +2,8 @@ from jinja2 import Environment, FileSystemLoader
 from templates.bancolombia_model import Bancolombia
 import random
 import datetime
+from constants.index import description_transactions
+
 
 model_templates = Bancolombia()
 
@@ -28,7 +30,7 @@ def give_date(transactions_amount):
 def create_descriptions(transactions_amount):
     descriptions = []
     for _ in range(transactions_amount):
-        descriptions.append(f"Description_{_ + 1}")
+        descriptions.append(random.choice(description_transactions))
 
     return descriptions
 
