@@ -119,7 +119,7 @@ def create_summary(balances, transactions_values, transactions_amount, first_bal
 
 def create_account_state():
     account_state = model_templates.account_state_template()
-    account_state['account_number'] = str(random.randint(1000000000, 99999999999))
+    account_state['account_number'] = str(random.randint(100000000, 99999999999))
 
     return account_state
 
