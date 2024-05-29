@@ -4,7 +4,7 @@ from constants.index import description_transactions
 import pdfkit
 import random
 import datetime
-
+import json
 model_templates = Bancolombia()
 
 
@@ -106,16 +106,18 @@ def create_summary(balances, transactions_values, transactions_amount, first_bal
 
     summary_template = model_templates.summary_template()
 
+    total_subtractions *= (-1)
+
     summary_template['previous_balance'] = first_balance
     summary_template['total_additions'] = f"{total_additions:,.2f}"
     summary_template['total_subtractions'] = f"{total_subtractions:,.2f}"
-    summary_template['average_balance'] = f"{(total_balance / transactions_amount):.2f}"
-    summary_template['total_balance'] = f"{total_balance:.2f}"
+    summary_template['average_balance'] = f"{(total_balance / transactions_amount):,.2f}"
+    summary_template['total_balance'] = f"{total_balance:,.2f}"
 
     return summary_template
 
 
-def write_results_to_file(account_state_result, table_rows, summary):
+def write_results_to_file(account_state_result, table_rows, summary, file_name):
     file_loader = FileSystemLoader('static')
     env = Environment(loader=file_loader)
     template_out = env.get_template('sample_bancolombia.html')
@@ -124,32 +126,45 @@ def write_results_to_file(account_state_result, table_rows, summary):
     with open('static/result.html', 'w') as f:
         f.write(output)
 
-    pdfkit.from_file(input="static/result.html", output_path='result.pdf')
+    try:
+        pdfkit.from_file(input="static/result.html", output_path=f'generated_pdfs/{file_name}.pdf')
+    except OSError as e:
+        print(f"Encountered issues when processing images: {str(e)}")
+        pass
+    finally:
+        with open(f'pdfs_data/{file_name}.json', 'w') as f:
+            json_data: dict = {
+                "summary": summary,
+                "table_rows": table_rows,
+                "account_state": account_state_result
+            }
+            f.write(json.dumps(json_data, indent=4, separators=(',', ': '), sort_keys=True, ensure_ascii=False))
 
-    print("HTML file generated successfully!")
+    print(f"{file_name} generated successfully!")
 
 
 if __name__ == "__main__":
     initial_balance = model_templates.summary_template().get("previous_balance")
-    transactions = random.randint(5, 10)
+    for _ in range(random.randint(5, 10)):
+        transactions = random.randint(5, 10)
+        result_dates = create_dates(transactions)
+        result_descriptions = create_descriptions(transactions)
+        result_branches = create_branches(transactions)
+        result_balances, result_transactions_values = calculate_balance(transactions, initial_balance)
 
-    result_dates = create_dates(transactions)
-    result_descriptions = create_descriptions(transactions)
-    result_branches = create_branches(transactions)
-    result_balances, result_transactions_values = calculate_balance(transactions, initial_balance)
+        final_template_rows = unify_results(
+            result_dates,
+            result_descriptions,
+            result_branches,
+            result_balances,
+            result_transactions_values,
+            transactions)
 
-    final_template_rows = unify_results(
-        result_dates,
-        result_descriptions,
-        result_branches,
-        result_balances,
-        result_transactions_values,
-        transactions)
+        final_summary = create_summary(result_balances, result_transactions_values, transactions, initial_balance)
 
-    final_summary = create_summary(result_balances, result_transactions_values, transactions, initial_balance)
-
-    write_results_to_file(
-        account_state_result=model_templates.account_state_template(),
-        table_rows=final_template_rows,
-        summary=final_summary
-    )
+        write_results_to_file(
+            account_state_result=model_templates.account_state_template(),
+            table_rows=final_template_rows,
+            summary=final_summary,
+            file_name=f"report_{_ + 1}"
+        )
