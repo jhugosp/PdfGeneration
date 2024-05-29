@@ -15,7 +15,7 @@ class Bancolombia:
         return {
             'from_date': '2023/12/31',
             'until_date': '2024/03/31',
-            'account_number': '123456789',
+            'account_number': '',
             'branch': 'SUCURSAL GIRÓN',
         }
 

@@ -117,6 +117,13 @@ def create_summary(balances, transactions_values, transactions_amount, first_bal
     return summary_template
 
 
+def create_account_state():
+    account_state = model_templates.account_state_template()
+    account_state['account_number'] = str(random.randint(1000000000, 99999999999))
+
+    return account_state
+
+
 def write_results_to_file(account_state_result, table_rows, summary, file_name):
     file_loader = FileSystemLoader('static')
     env = Environment(loader=file_loader)
@@ -162,8 +169,10 @@ if __name__ == "__main__":
 
         final_summary = create_summary(result_balances, result_transactions_values, transactions, initial_balance)
 
+        final_account_state = create_account_state()
+
         write_results_to_file(
-            account_state_result=model_templates.account_state_template(),
+            account_state_result=final_account_state,
             table_rows=final_template_rows,
             summary=final_summary,
             file_name=f"report_{_ + 1}"
