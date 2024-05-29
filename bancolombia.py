@@ -1,10 +1,14 @@
 from jinja2 import Environment, FileSystemLoader
 from templates.bancolombia_model import Bancolombia
 from constants.index import description_transactions
+from flask import Flask
+from flask import render_template
 import pdfkit
 import random
 import datetime
 import json
+
+app = Flask(__name__)
 model_templates = Bancolombia()
 
 
@@ -124,15 +128,18 @@ def create_account_state():
     return account_state
 
 
-def write_results_to_file(account_state_result, table_rows, summary, file_name):
+def return_html_string(account_state_result, table_rows, summary):
     file_loader = FileSystemLoader('static')
     env = Environment(loader=file_loader)
     template_out = env.get_template('sample_bancolombia.html')
-    output = template_out.render(account_state=account_state_result, table_rows=table_rows, summary=summary)
+    return template_out.render(account_state=account_state_result, table_rows=table_rows, summary=summary)
+
+
+def write_results_to_file(account_state_result, table_rows, summary, file_name):
+    output = return_html_string(account_state_result, table_rows, summary)
 
     with open('static/result.html', 'w') as f:
         f.write(output)
-
     try:
         pdfkit.from_file(input="static/result.html", output_path=f'generated_pdfs/{file_name}.pdf')
     except OSError as e:
@@ -150,7 +157,53 @@ def write_results_to_file(account_state_result, table_rows, summary, file_name):
     print(f"{file_name} generated successfully!")
 
 
+@app.get("/")
+def return_basic_html():
+    initial_balance_flask = model_templates.summary_template().get("previous_balance")
+    transactions_flask = random.randint(5, 10)
+
+    result_dates_flask = create_dates(transactions_flask)
+
+    result_descriptions_flask = create_descriptions(transactions_flask)
+
+    result_branches_flask = create_branches(transactions_flask)
+
+    result_balances_flask, result_transactions_values_flask = (
+        calculate_balance(transactions_flask, initial_balance_flask))
+
+    final_template_rows_flask = unify_results(
+        result_dates_flask,
+        result_descriptions_flask,
+        result_branches_flask,
+        result_balances_flask,
+        result_transactions_values_flask,
+        transactions_flask)
+
+    final_summary_flask = (create_summary(
+        result_balances_flask,
+        result_transactions_values_flask,
+        transactions_flask,
+        initial_balance_flask)
+    )
+
+    final_account_state_flask = create_account_state()
+
+    with open(f'pdfs_data/explorer_pdf_1.json', 'w') as f:
+        json_data: dict = {
+            "summary": final_summary_flask,
+            "table_rows": final_template_rows_flask,
+            "account_state": final_account_state_flask
+        }
+        f.write(json.dumps(json_data, indent=4, separators=(',', ': '), sort_keys=True, ensure_ascii=False))
+
+    return render_template('sample_bancolombia.html',
+                           account_state=final_account_state_flask,
+                           table_rows=final_template_rows_flask,
+                           summary=final_summary_flask)
+
+
 if __name__ == "__main__":
+
     initial_balance = model_templates.summary_template().get("previous_balance")
     for _ in range(random.randint(5, 10)):
         transactions = random.randint(5, 10)
