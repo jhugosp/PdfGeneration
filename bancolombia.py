@@ -1,9 +1,10 @@
 from jinja2 import Environment, FileSystemLoader
 from models.bancolombia_model import Bancolombia, create_account_state, create_summary, create_branches
-from models.bancolombia_model import create_descriptions, create_dates, calculate_balance, unify_results
-
+from models.bancolombia_model import create_dates, calculate_balance, unify_results
+from pyppeteer_download import save_page_as_pdf
 from flask import Flask
 from flask import render_template
+import asyncio
 import pdfkit
 import random
 import json
@@ -76,3 +77,12 @@ def return_basic_html():
                            account_state=final_account_state,
                            table_rows=final_template_rows,
                            summary=final_summary)
+
+
+if __name__ == "__main__":
+    url = "http://localhost:5000/"
+    output_dir = "pdfs_data"
+    iterations = 10
+
+    save_page_as_pdf(url, iterations, output_dir)
+    asyncio.get_event_loop().run_until_complete(save_page_as_pdf(url, iterations, output_dir))
