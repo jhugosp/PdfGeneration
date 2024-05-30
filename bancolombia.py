@@ -64,11 +64,11 @@ def return_basic_html():
         )
 
     final_summary = (create_summary(
-        balances,
-        transactions_values,
-        transactions,
-        initial_balance,
-        total_interest)
+        balances=balances,
+        transactions_values=transactions_values,
+        transactions_amount=transactions,
+        first_balance=initial_balance,
+        interests=total_interest)
     )
 
     final_account_state = create_account_state()
@@ -82,7 +82,7 @@ def return_basic_html():
 if __name__ == "__main__":
     url = "http://localhost:5000/"
     output_dir = "pdfs_data"
-    iterations = 10
+    iterations = int(input("How many files will you download? "))
 
     save_page_as_pdf(url, iterations, output_dir)
     asyncio.get_event_loop().run_until_complete(save_page_as_pdf(url, iterations, output_dir))
