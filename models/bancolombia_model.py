@@ -89,7 +89,15 @@ def calculate_balance(transactions_amount: int, initial_balance: float) -> tuple
     return present_balances, values_transactions, descriptions
 
 
-def unify_results(dates, descriptions, branches, balances, transactions_values, transactions_amount):
+def unify_results(**kwargs):
+
+    dates = kwargs.get('dates')
+    descriptions = kwargs.get('descriptions')
+    branches = kwargs.get('branches')
+    balances = kwargs.get('balances')
+    transactions_values = kwargs.get('transactions_values')
+    transactions_amount = kwargs.get('transactions_amount')
+
     total_interest = 0
     table_rows: list = []
     for _ in range(transactions_amount):
@@ -109,7 +117,14 @@ def unify_results(dates, descriptions, branches, balances, transactions_values, 
     return table_rows, total_interest
 
 
-def create_summary(balances, transactions_values, transactions_amount, first_balance, interests):
+def create_summary(**kwargs):
+
+    balances = kwargs.get('balances')
+    transactions_values = kwargs.get('transactions_values')
+    transactions_amount = kwargs.get('transactions_amount')
+    first_balance = kwargs.get('first_balance')
+    interests = kwargs.get('interests')
+
     total_balance = float(balances[len(balances) - 1].replace(',', ''))
     total_additions = 0
     total_subtractions = 0
