@@ -26,6 +26,7 @@ async def save_page_as_pdf(url, n, output_dir):
         }''')
         pdf_path = os.path.join(output_dir, f"extracts_{i+1}.pdf")
         await page.pdf({'path': pdf_path, 'format': 'A4', 'printBackground': True})
+        print("Saved PDF {}".format(i))
         await page.reload()
 
     await browser.close()
