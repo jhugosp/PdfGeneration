@@ -1,6 +1,7 @@
 from jinja2 import Environment, FileSystemLoader
 from models.bancolombia_model import Bancolombia, create_account_state, create_summary, create_branches
 from models.bancolombia_model import create_dates, calculate_balance, unify_results
+from image_transformation import pdf_to_png, list_files_in_directory, de_blur_image, assess_image_quality
 from pyppeteer_download import save_page_as_pdf
 from flask import Flask
 from flask import render_template
@@ -61,7 +62,7 @@ def return_basic_html():
         balances=balances,
         transactions_values=transactions_values,
         transactions_amount=transactions,
-        )
+    )
 
     final_summary = (create_summary(
         balances=balances,
@@ -79,10 +80,33 @@ def return_basic_html():
                            summary=final_summary)
 
 
-if __name__ == "__main__":
+async def download_pdfs() -> None:
     url = "http://localhost:5000/"
     output_dir = "pdfs_data"
     iterations = int(input("How many files will you download? "))
 
-    save_page_as_pdf(url, iterations, output_dir)
-    asyncio.get_event_loop().run_until_complete(save_page_as_pdf(url, iterations, output_dir))
+    await save_page_as_pdf(url, iterations, output_dir)
+    await asyncio.get_event_loop().run_until_complete(save_page_as_pdf(url, iterations, output_dir))
+
+
+def generate_distorted_images():
+    consulted_dir = input("Which directory will you consult? (output-1/output-2) ")
+    dir_path = f"images-distorted/{consulted_dir}"
+    extracted_files: [] = list_files_in_directory(dir_path)
+    for _ in range(len(extracted_files)):
+        pdf_to_png(
+            f'{dir_path}/{extracted_files[_]}',
+            f'generated_images/real_case/',
+            (_ + 1)
+        )
+    print(f"Successfully printed image: {_ + 1}")
+
+
+if __name__ == "__main__":
+    # generate_distorted_images()
+    print("Real quality image:")
+    assess_image_quality("generated_images/real_case/extract_1_1.png")
+    print("Distorted quality image:")
+    assess_image_quality("generated_images/distorted_2/extract_1_1.png")
+
+    de_blur_image("generated_images/distorted_2/extract_1_1.png")
