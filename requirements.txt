@@ -57,6 +57,9 @@ Werkzeug==3.0.3
 wkhtmltopdf==0.2
 xhtml2pdf==0.2.15
 zopfli==0.2.3
-
 selenium~=4.21.0
 pyppeteer~=2.0.0
+pdf2image~=1.17.0
+opencv-python~=4.9.0.80
+pytesseract~=0.3.10
+scikit-image~=0.23.2
