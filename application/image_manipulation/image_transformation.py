@@ -27,7 +27,7 @@ class ImageManipulator:
     def image_to_pdf(image, pdf_path):
         c = canvas.Canvas(pdf_path, pagesize=letter)
         width, height = letter
-        image = image.resize((width, height), Image.LANCZOS)
+        # image = image.resize((width, height), Image.LANCZOS)
         image_path = 'temp_image.jpg'
         image.save(image_path)
         c.drawImage(image_path, 0, 0, width, height)
