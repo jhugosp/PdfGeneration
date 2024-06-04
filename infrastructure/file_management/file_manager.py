@@ -3,13 +3,13 @@ import asyncio
 import os
 
 
-async def download_pdfs() -> None:
+def download_pdfs() -> None:
     url = "http://localhost:5000/"
     output_dir = "application/data_generation/synthetic_pdfs"
     iterations = int(input("How many files will you download? "))
 
-    await asyncio.run(save_page_as_pdf(url, iterations, output_dir))
-    await asyncio.get_event_loop().run_until_complete(save_page_as_pdf(url, iterations, output_dir))
+    asyncio.run(save_page_as_pdf(url, iterations, output_dir))
+    asyncio.get_event_loop().run_until_complete(save_page_as_pdf(url, iterations, output_dir))
 
 
 async def save_page_as_pdf(url, n, output_dir) -> None:
