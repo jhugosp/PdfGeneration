@@ -1,113 +1,88 @@
-from jinja2 import Environment, FileSystemLoader
-from models.bancolombia_model import Bancolombia, create_account_state, create_summary, create_branches
-from models.bancolombia_model import create_dates, calculate_balance, unify_results
-from image_transformation import pdf_to_png, list_files_in_directory, de_blur_image, assess_image_quality
-from pyppeteer_download import save_page_as_pdf
+from application.image_manipulation.image_transformation import ImageManipulator
+from application.data_handler.data_manager import DataManager
+
 from flask import Flask
 from flask import render_template
-import asyncio
-import pdfkit
-import random
-import json
+import jinja2
 
 app = Flask(__name__)
-model_templates = Bancolombia()
-
-
-def return_html_string(account_state_result, table_rows, summary):
-    file_loader = FileSystemLoader('static')
-    env = Environment(loader=file_loader)
-    template_out = env.get_template('sample_bancolombia.html')
-    return template_out.render(account_state=account_state_result, table_rows=table_rows, summary=summary)
-
-
-def write_results_to_file(account_state_result, table_rows, summary, file_name):
-    output = return_html_string(account_state_result, table_rows, summary)
-
-    with open('static/result.html', 'w') as f:
-        f.write(output)
-    try:
-        pdfkit.from_file(input="static/result.html", output_path=f'generated_pdfs/{file_name}.pdf')
-    except OSError as e:
-        print(f"Encountered issues when processing images: {str(e)}")
-        pass
-    finally:
-        with open(f'pdfs_data/{file_name}.json', 'w') as f:
-            json_data: dict = {
-                "summary": summary,
-                "table_rows": table_rows,
-                "account_state": account_state_result
-            }
-            f.write(json.dumps(json_data, indent=4, separators=(',', ': '), sort_keys=True, ensure_ascii=False))
-
-    print(f"{file_name} generated successfully!")
+image_manipulator = ImageManipulator()
+data_manager = DataManager()
 
 
 @app.get("/")
 def return_basic_html():
-    initial_balance = model_templates.summary_template().get("previous_balance")
-    transactions = random.randint(5, 10)
+    rows, summary, account_state = data_manager.prepare_pdf_information()
+    data_manager.save_json_data(account_state_result=account_state, table_rows=rows, summary=summary)
 
-    dates = create_dates(transactions)
-
-    branches = create_branches(transactions)
-
-    balances, transactions_values, descriptions = (
-        calculate_balance(transactions, initial_balance))
-
-    final_template_rows, total_interest = unify_results(
-        dates=dates,
-        descriptions=descriptions,
-        branches=branches,
-        balances=balances,
-        transactions_values=transactions_values,
-        transactions_amount=transactions,
-    )
-
-    final_summary = (create_summary(
-        balances=balances,
-        transactions_values=transactions_values,
-        transactions_amount=transactions,
-        first_balance=initial_balance,
-        interests=total_interest)
-    )
-
-    final_account_state = create_account_state()
-
-    return render_template('sample_bancolombia.html',
-                           account_state=final_account_state,
-                           table_rows=final_template_rows,
-                           summary=final_summary)
-
-
-async def download_pdfs() -> None:
-    url = "http://localhost:5000/"
-    output_dir = "pdfs_data"
-    iterations = int(input("How many files will you download? "))
-
-    await save_page_as_pdf(url, iterations, output_dir)
-    await asyncio.get_event_loop().run_until_complete(save_page_as_pdf(url, iterations, output_dir))
-
-
-def generate_distorted_images():
-    consulted_dir = input("Which directory will you consult? (output-1/output-2) ")
-    dir_path = f"images-distorted/{consulted_dir}"
-    extracted_files: [] = list_files_in_directory(dir_path)
-    for _ in range(len(extracted_files)):
-        pdf_to_png(
-            f'{dir_path}/{extracted_files[_]}',
-            f'generated_images/real_case/',
-            (_ + 1)
-        )
-    print(f"Successfully printed image: {_ + 1}")
+    template_loader = jinja2.FileSystemLoader(searchpath="static/templates/")
+    template_env = jinja2.Environment(loader=template_loader)
+    template = template_env.get_template("sample_bancolombia.html")
+    return render_template(template,
+                           account_state=account_state,
+                           table_rows=rows,
+                           summary=summary)
 
 
 if __name__ == "__main__":
-    # generate_distorted_images()
-    print("Real quality image:")
-    assess_image_quality("generated_images/real_case/extract_1_1.png")
-    img_path = "generated_images/test/extract_1_1.png"
+    while True:
+        option = int(input("""
+            Please enter what you want to do:
+            
+            1. Check quality of a given image.
+            2. Enhance quality of given image.
+            3. Download x amount of PDF files from live server.
+            4. Downgrade Image quality of a directory of images and generate PDFs.
+            5. Generate distorted files from a directory containing PDFs.
+            
+            Press anything else to quit.
+            
+        """))
 
-    for _ in range(10):
-        print(f"Image name: {img_path}")
-        img_path = de_blur_image(img_path, _)
+        match option:
+
+            case 1:
+                # Example: application/data_generation/generated_images/real_case/extract_1_1.png
+                image_path = input("Enter path to check image quality: ")
+                image_manipulator.assess_image_quality(image_path)
+                continue
+            case 2:
+                # Example: application/data_generation/generated_images/real_case/extract_1_1.png
+                image_path = input("Enter path to check image quality: ")
+                for _ in range(10):
+                    print(f"Image name: {image_path}")
+                    img_path = image_manipulator.de_blur_image(image_path, _)
+                continue
+            case 3:
+                continue
+            case 4:
+                continue
+            case 5:
+                continue
+            case _:
+                break
+
+        # generate_distorted_images()
+
+        # try:
+        #     asyncio.run(download_pdfs())
+        # except RuntimeError as e:
+        #     print("Finished PDF saving.")
+        # finally:
+        #     sys.exit()
+
+        # input_directory = 'static/input/'
+        # output_directory = 'static/output/'
+
+        # if not os.path.exists(output_directory):
+        #     os.makedirs(output_directory)
+        #
+        # for filename in os.listdir(input_directory):
+        #     if filename.endswith('.png') or filename.endswith('.jpg') or filename.endswith('.jpeg'):
+        #         input_image_path = os.path.join(input_directory, filename)
+        #         output_pdf_path = os.path.join(output_directory, os.path.splitext(filename)[0] + '_distorted.pdf')
+        #
+        #         distorted_image = distort_image(input_image_path)
+        #         image_to_pdf(distorted_image, output_pdf_path)
+        #
+        #         print(f"Distorted PDF saved to {output_pdf_path}")
