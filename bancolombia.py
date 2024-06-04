@@ -106,7 +106,8 @@ if __name__ == "__main__":
     # generate_distorted_images()
     print("Real quality image:")
     assess_image_quality("generated_images/real_case/extract_1_1.png")
-    print("Distorted quality image:")
-    assess_image_quality("generated_images/distorted_2/extract_1_1.png")
+    img_path = "generated_images/test/extract_1_1.png"
 
-    de_blur_image("generated_images/distorted_2/extract_1_1.png")
+    for _ in range(10):
+        print(f"Image name: {img_path}")
+        img_path = de_blur_image(img_path, _)
