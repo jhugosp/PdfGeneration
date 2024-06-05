@@ -17,7 +17,7 @@ def download_pdfs() -> None:
 
         x = | y - z |
 
-    :return: Nothing
+        :return: Nothing
     """
     url = "http://localhost:5000/"
     output_dir = "application/data_generation/synthetic_pdfs"
@@ -30,10 +30,10 @@ def download_pdfs() -> None:
 async def save_page_as_pdf(url, n, output_dir) -> None:
     """ Browser printing script which also checks image loading before printing.
 
-    :param url:             Local server to be consumed in order to obtain PDF file.
-    :param n:               Iterations pointed by user, which translated to PDFs to be downloaded.
-    :param output_dir:      Output directory in which PDF files will be stored.
-    :return:                Nothing
+        :param url:             Local server to be consumed in order to obtain PDF file.
+        :param n:               Iterations pointed by user, which translated to PDFs to be downloaded.
+        :param output_dir:      Output directory in which PDF files will be stored.
+        :return:                Nothing
     """
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
