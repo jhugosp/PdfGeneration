@@ -16,6 +16,8 @@ class Bancolombia:
                 until_date:         Final date which bound tracking of transactions. (YYYY/MM/dd)
                 account_number:     Number of the account (9 - 11 length) Need to randomly generate.
                 branch:             Branch in which the registry was generated.
+
+                :returns:           Dict with a basic account state template
         """
         return {
             'from_date': '2023/12/31',
@@ -26,18 +28,20 @@ class Bancolombia:
 
     @staticmethod
     def summary_template() -> dict:
-        """Elements to populate summary (Banco de Bogotá)
+        """ Elements to populate summary (Banco de Bogotá)
 
-                previous_balance:   Initial balance held in account
-                total_additions:    Total of transactions which added to initial balance held in account.
-                total_subtractions: Total of deductions which subtracted to initial balance held in account.
-                                    Calculate as a deduction/negative value. Paint as so
-                average_balance:    Tax applied to each transaction. Investigate if it should be calculated as negative
-                                    value.
-                accounts_demand:    4*1000 bank rule. Calculate as a deduction/negative value. Paint as so
-                interests_payed:    Investigate what this field does, how does it affect calculations.
-                source_retention:   Investigate what this field does, how does it affect calculations.
-                total_balance:    This field is to be calculated and appended outside declaration as a last field
+            previous_balance:   Initial balance held in account
+            total_additions:    Total of transactions which added to initial balance held in account.
+            total_subtractions: Total of deductions which subtracted to initial balance held in account.
+                                Calculate as a deduction/negative value. Paint as so
+            average_balance:    Tax applied to each transaction. Investigate if it should be calculated as negative
+                                value.
+            accounts_demand:    4*1000 bank rule. Calculate as a deduction/negative value. Paint as so
+            interests_payed:    Investigate what this field does, how does it affect calculations.
+            source_retention:   Investigate what this field does, how does it affect calculations.
+            total_balance:    This field is to be calculated and appended outside declaration as a last field
+
+            :returns:           Dict with a basic summary template
         """
         return {
             'previous_balance': 100.00,
@@ -52,7 +56,7 @@ class Bancolombia:
 
     @staticmethod
     def row_template() -> dict:
-        """Rows to populate extracts table (Banco de Bogotá)
+        """ Rows to populate extracts table (Banco de Bogotá)
 
             date:               Date the transaction took place (MM/dd format)
             cod_trans:          Transaction code (0000 length)
@@ -66,7 +70,9 @@ class Bancolombia:
                                 present value needs to be calculated as balance -= charge_amount
 
                                 Should also be used to update elements. total
-            """
+
+            :returns:           Dict with a basic row template
+        """
         return {
             'date': '',
             'description': '',
@@ -78,6 +84,11 @@ class Bancolombia:
 
     @staticmethod
     def create_branches(transaction_amount):
+        """ Generated a list containing random branches from a bank.
+
+            :param transaction_amount:  Amount of transactions performed which require an equal amount of branches.
+            :return:                    List of branches.
+        """
         branches = []
         branch_template: list = Bancolombia.branches_templates()
         for _ in range(transaction_amount):
@@ -87,6 +98,12 @@ class Bancolombia:
 
     @staticmethod
     def create_descriptions(transactions_amount):
+        """ Generated a list containing random branches from a bank.
+
+            :param transactions_amount:     Amount of transactions performed which require an equal amount of
+                                            descriptions.
+            :return:                        List of descriptions.
+        """
         descriptions = []
         for _ in range(transactions_amount):
             descriptions.append(random.choice(Bancolombia.descriptions_templates()))
@@ -94,21 +111,11 @@ class Bancolombia:
         return descriptions
 
     @staticmethod
-    def write_json_object(final_summary_flask, final_template_rows_flask, final_account_state_flask) -> None:
-        with open(f'pdfs_data/explorer_pdf_1.json', 'w') as f:
-            json_data: dict = {
-                "summary": final_summary_flask,
-                "table_rows": final_template_rows_flask,
-                "account_state": final_account_state_flask
-            }
-            f.write(json.dumps(json_data, indent=4, separators=(',', ': '), sort_keys=True, ensure_ascii=False))
-
-    @staticmethod
     def create_dates(transactions_amount):
         """Returns a deposit date randomly based on an amount of dates to give
 
-            transactions_amount: Amount of dates to be generated based on the transactions to generate.
-        :return: sorted list of dates
+            :param transactions_amount:     Amount of dates to be generated based on the transactions to generate.
+            :return:                        Sorted list of dates
         """
         dates = []
 
@@ -124,6 +131,20 @@ class Bancolombia:
 
     @staticmethod
     def calculate_balance(transactions_amount: int, initial_balance: float) -> tuple:
+        """ Transactions operating in order to calculate balance coming from user perceived operations.
+
+            The function is in charge of calculating the present balance held in an account, if there is a charge or
+            a deposit made and if so, validate if there is an interest to be taken into account.
+
+            To differentiate between charges, deposits and interest calculation, simple if statements validate the
+            chance of an option by generating a random number. Likewise, the amount of a transaction is a randomized
+            value and is subject to change when an initially proposed charge is greater than the money initially held
+            in an account.
+
+            :param transactions_amount:     Amount of transactions to be processed for a user.
+            :param initial_balance:         Initial balance held in an account before performing calculations.
+            :return:
+        """
         present_balances = []
         values_transactions = []
         descriptions = []
@@ -164,7 +185,19 @@ class Bancolombia:
 
     @staticmethod
     def unify_results(**kwargs):
+        """ Unification of results coming from the PDF information preparation function in regard to row templating
+            and interest calculation.
 
+            :param kwargs:      Parameters received by function which, in essence, are:
+
+                                - dates:                List of dates to be related to a transaction
+                                - descriptions:         Description held by a transaction
+                                - branches:             List of branches to be chosen from, to relate to a transaction
+                                - transactions_values:  List of charges and deposits made from a user.
+                                - transactions_amount:  Amount of transactions performed by a user.
+            :return:            A tuple containing the unified information as dict list of table rows, and the total
+                                interest accrued by a user
+        """
         dates = kwargs.get('dates')
         descriptions = kwargs.get('descriptions')
         branches = kwargs.get('branches')
@@ -192,7 +225,20 @@ class Bancolombia:
 
     @staticmethod
     def create_summary(**kwargs):
+        """ Final summarization of balance, charges and deposits in a user bank extract.
 
+            The function transforms and calculates the sequential previous balance, total of deposits, interest and
+            charges as well as the total and average balance in the user account
+
+            :param kwargs:      Parameters received by function which, in essence, are:
+
+                                - balances:             List of dates to be related to a transaction
+                                - transactions_values:  List of charges and deposits made from a user.
+                                - transactions_amount:  Amount of transactions performed by a user.
+                                - first_balance:        First balance held in account by a user.
+                                - interests:            List of interests values accrued by a user.
+            :return:            A dict containing the replaced information.
+        """
         balances = kwargs.get('balances')
         transactions_values = kwargs.get('transactions_values')
         transactions_amount = kwargs.get('transactions_amount')
@@ -226,6 +272,10 @@ class Bancolombia:
 
     @staticmethod
     def create_account_state():
+        """ Creates a basic account state with an initialized random account number.
+
+            :return:    dict which represents a basic account_state object.
+        """
         account_state = Bancolombia.account_state_template()
         account_state['account_number'] = str(random.randint(100000000, 99999999999))
 
@@ -233,17 +283,17 @@ class Bancolombia:
 
     @staticmethod
     def branches_templates():
-        """Returns a simple list of default values for branches
+        """ Returns a simple list of default values for branches
 
-        :return: list of strings comprised of cities' names
+            :return: list of strings comprised of cities' names
         """
         return ["GIRÓN", "BOGOTÁ", "CORRESPONSA", "MEDELLÍN", "CALI", "PASTO", "BOYACÁ"]
 
     @staticmethod
     def descriptions_templates():
-        """Returns a simple list of default values for descriptions
+        """ Returns a simple list of default values for descriptions
 
-        :return: list of strings comprised of cities' names
+            :return: list of strings comprised of cities' names
         """
         return [
             "ABONO INTERESES A LA CUENTA 654****1234 DE AHORROS PERSONAS BANCOLOMBIA. PAGO MÍNIMO REALIZADO EN PESOS "
