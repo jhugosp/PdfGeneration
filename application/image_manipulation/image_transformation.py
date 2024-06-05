@@ -13,6 +13,14 @@ import os
 class ImageManipulator:
 
     @staticmethod
+    def save_perfect_images():
+        pdfs_path = 'application/data_generation/synthetic_pdfs'
+        output_dir = 'application/data_generation/generated_images/perfect'
+        pdfs_list = ImageManipulator.list_files_in_directory(pdfs_path)
+        for _ in range(len(pdfs_list)):
+            ImageManipulator.pdf_to_png(pdf_path=f'{pdfs_path}/{pdfs_list[_]}', output_folder=output_dir, index=_)
+
+    @staticmethod
     def distort_image(image_path, distortion_type, threshold=240):
         image = Image.open(image_path)
         image = image.convert("L")

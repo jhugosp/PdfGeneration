@@ -24,6 +24,7 @@ def return_basic_html():
     template_loader = jinja2.FileSystemLoader(searchpath="static/templates/")
     template_env = jinja2.Environment(loader=template_loader)
     template = template_env.get_template("sample_bancolombia.html")
+
     return render_template(template,
                            account_state=account_state,
                            table_rows=rows,
@@ -38,6 +39,7 @@ if __name__ == "__main__":
 3. Download x amount of PDF files from live server.
 4. Downgrade Image quality of a directory of perfect png images and generate PDFs.
 5. Generate distorted png images from a directory containing distorted PDFs.
+6. Generate perfect images from files stored from live server.
             
 Press anything else to quit.\n""")
 
@@ -85,6 +87,9 @@ Press anything else to quit.\n""")
                 continue
             case "5":
                 image_manipulator.generate_distorted_images()
+                continue
+            case "6":
+                image_manipulator.save_perfect_images()
                 continue
             case _:
                 break
