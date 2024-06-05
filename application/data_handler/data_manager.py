@@ -9,6 +9,14 @@ model_templates = Bancolombia()
 class DataManager:
     @staticmethod
     def save_json_data(account_state_result, table_rows, summary):
+        """ Method which saves a json data or 'metadata' of an image.
+
+        :param account_state_result:    Dictionary containing information about an account state to present to client.
+        :param table_rows:              List of dictionaries containing information about the transactions of an extract
+                                        to present to client.
+        :param summary:                 Summary of transaction operations to present to client.
+        :return:                        Nothing
+        """
         try:
             with open(f'application/data_generation/pdfs_json_data/{uuid.uuid4().hex}.json', 'w') as f:
                 json_data: dict = {
@@ -22,6 +30,18 @@ class DataManager:
 
     @staticmethod
     def prepare_pdf_information() -> tuple:
+        """ PDF information preparation function, in charge of generating:
+
+            - Dates
+            - Branches
+            - Balances and transactions operations
+            - Interest calculation
+            - Total transactions
+            - Operations summary
+            - Account state formation
+
+        :return: A tuple containing the final rows, summary and account state to present to client.
+        """
         initial_balance = model_templates.summary_template().get("previous_balance")
         transactions = random.randint(5, 10)
 
