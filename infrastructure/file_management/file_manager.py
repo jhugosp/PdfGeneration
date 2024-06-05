@@ -4,6 +4,21 @@ import os
 
 
 def download_pdfs() -> None:
+    """ Asynchronous method in charge of calling a local server in order to automatically browser-print PDF files
+        based on input given from client, triggered from a flask endpoint.
+
+        This input will point the amount of files to be downloaded.
+
+        When storing said files, they fall under a common name scheme, and as of now, override previously stored files.
+
+        x: Non overridden files
+        y: Amount of files to download from server.
+        z: Previously stored files
+
+        x = | y - z |
+
+    :return: Nothing
+    """
     url = "http://localhost:5000/"
     output_dir = "application/data_generation/synthetic_pdfs"
     iterations = int(input("How many files will you download? "))
@@ -13,6 +28,13 @@ def download_pdfs() -> None:
 
 
 async def save_page_as_pdf(url, n, output_dir) -> None:
+    """ Browser printing script which also checks image loading before printing.
+
+    :param url:             Local server to be consumed in order to obtain PDF file.
+    :param n:               Iterations pointed by user, which translated to PDFs to be downloaded.
+    :param output_dir:      Output directory in which PDF files will be stored.
+    :return:                Nothing
+    """
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
