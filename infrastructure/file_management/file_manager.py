@@ -1,9 +1,8 @@
 from pyppeteer import launch
-import asyncio
 import os
 
 
-def download_pdfs() -> None:
+async def download_pdfs():
     """ Asynchronous method in charge of calling a local server in order to automatically browser-print PDF files
         based on input given from client, triggered from a flask endpoint.
 
@@ -23,8 +22,10 @@ def download_pdfs() -> None:
     output_dir = "application/data_generation/synthetic_pdfs"
     iterations = int(input("How many files will you download? "))
 
-    asyncio.run(save_page_as_pdf(url, iterations, output_dir))
-    asyncio.get_event_loop().run_until_complete(save_page_as_pdf(url, iterations, output_dir))
+    try:
+        await save_page_as_pdf(url, iterations, output_dir)
+    except RuntimeError:
+        print("Finished PDF saving.")
 
 
 async def save_page_as_pdf(url, n, output_dir) -> None:
@@ -55,7 +56,7 @@ async def save_page_as_pdf(url, n, output_dir) -> None:
                 });
             }));
         }''')
-        pdf_path = os.path.join(output_dir, f"extracts_{i+1}.pdf")
+        pdf_path = os.path.join(output_dir, f"extracts_{i + 1}.pdf")
         await page.pdf({'path': pdf_path, 'format': 'A4', 'printBackground': True})
         print("Saved PDF {}".format(i + 1))
         await page.reload()

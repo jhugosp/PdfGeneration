@@ -1,13 +1,11 @@
-import random
-
-from application.image_manipulation.image_transformation import ImageManipulator
 from application.data_handler.data_manager import DataManager
+from infrastructure.entrypoint_execution.execution_handler import ExecutionHandler
+from application.image_manipulation.image_transformation import ImageManipulator
 
 from flask import Flask
 from flask import render_template
 import jinja2
 import asyncio
-import os
 
 from infrastructure.file_management.file_manager import download_pdfs
 
@@ -31,65 +29,27 @@ def return_basic_html():
                            summary=summary)
 
 
+async def main():
+    execution_handler = ExecutionHandler(ImageManipulator())
+    args = execution_handler.args
+
+    if args.start_server:
+        execution_handler.start_server()
+    if args.quality_check:
+        execution_handler.check_quality(args.quality_check)
+    if args.image_enhancement:
+        execution_handler.enhance_image(args.image_enhancement)
+    if args.download_pdfs:
+        await download_pdfs()
+    if args.image_downgrade:
+        execution_handler.downgrade_images()
+    if args.generate_distorted_images:
+        image_manipulator.generate_distorted_images()
+    if args.generate_perfect_images:
+        image_manipulator.save_perfect_images()
+
+    if not any(vars(args).values()):
+        execution_handler.menu_printing()
+
 if __name__ == "__main__":
-    while True:
-        option = input("""\nPlease enter what you want to do:
-1. Check quality of a given image.
-2. Enhance quality of given image.
-3. Download x amount of PDF files from live server.
-4. Downgrade Image quality of a directory of perfect png images and generate PDFs.
-5. Generate distorted png images from a directory containing distorted PDFs.
-6. Generate perfect images from files stored from live server.
-            
-Press anything else to quit.\n""")
-
-        match option:
-
-            case "1":
-                # Example image_path: application/data_generation/generated_images/real_case/extract_1_1.png
-                image_path = input("Enter path to check image quality: ")
-                image_manipulator.assess_image_quality(image_path)
-                continue
-            case "2":
-                # Example image_path: application/data_generation/generated_images/distorted_2/extract_1_1.png
-                image_path = input("Enter path to check image quality: ")
-                iterations = int(input("How many iterations would you go through? "))
-                for _ in range(iterations if 0 < iterations < 10 else 5):
-                    print(f"Image name: {image_path}")
-                    image_path = image_manipulator.de_blur_image(image_path, (_ + 1))
-                continue
-            case "3":
-                try:
-                    asyncio.run(download_pdfs())
-                except RuntimeError as e:
-                    print("Finished PDF saving.")
-                finally:
-                    continue
-            case "4":
-                input_directory = 'application/data_generation/generated_images/perfect'
-                for filename in os.listdir(input_directory):
-                    if filename.endswith('.png') or filename.endswith('.jpg') or filename.endswith('.jpeg'):
-                        distortion_type = 0.5 < random.random()
-                        input_image_path = os.path.join(input_directory, filename)
-
-                        if distortion_type:
-                            output_directory = "application/data_generation/distorted_pdfs/distorted_1/"
-                        else:
-                            output_directory = "application/data_generation/distorted_pdfs/distorted_2/"
-
-                        output_pdf_path = (
-                            os.path.join(output_directory, os.path.splitext(filename)[0] + '_distorted.pdf'))
-
-                        distorted_image = image_manipulator.distort_image(input_image_path, distortion_type)
-                        image_manipulator.image_to_pdf(distorted_image, output_pdf_path)
-
-                        print(f"Distorted PDF saved to {output_pdf_path}")
-                continue
-            case "5":
-                image_manipulator.generate_distorted_images()
-                continue
-            case "6":
-                image_manipulator.save_perfect_images()
-                continue
-            case _:
-                break
+    asyncio.run(main())

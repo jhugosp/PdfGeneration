@@ -120,8 +120,10 @@ class ImageManipulator:
         images = convert_from_path(pdf_path)
 
         for i, image in enumerate(images):
-            image_path = os.path.join(output_folder, f"extract_{i + 1}_{index}.png")
+            image_name = f"extract_{i + 1}_{index}.png"
+            image_path = os.path.join(output_folder, image_name)
             image.save(image_path, 'PNG')
+            print(f"Saved Image: {image_name}")
 
     @staticmethod
     def generate_distorted_images():
