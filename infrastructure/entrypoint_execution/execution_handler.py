@@ -69,6 +69,7 @@ Press anything else to quit.\n""")
         args_parser.add_argument("--start-server",
                                  required=False,
                                  default=False,
+                                 action='store_true',
                                  help="Simple instruction to boot live server.")
         args_parser.add_argument("--quality-check",
                                  required=False,
