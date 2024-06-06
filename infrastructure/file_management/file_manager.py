@@ -3,7 +3,7 @@ import asyncio
 import os
 
 
-def download_pdfs() -> None:
+def download_pdfs():
     """ Asynchronous method in charge of calling a local server in order to automatically browser-print PDF files
         based on input given from client, triggered from a flask endpoint.
 
@@ -24,7 +24,7 @@ def download_pdfs() -> None:
     iterations = int(input("How many files will you download? "))
 
     asyncio.run(save_page_as_pdf(url, iterations, output_dir))
-    asyncio.get_event_loop().run_until_complete(save_page_as_pdf(url, iterations, output_dir))
+    return asyncio.get_event_loop().run_until_complete(save_page_as_pdf(url, iterations, output_dir))
 
 
 async def save_page_as_pdf(url, n, output_dir) -> None:
