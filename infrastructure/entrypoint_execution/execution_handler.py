@@ -90,22 +90,25 @@ Press anything else to quit.\n""")
                                  default=False,
                                  action='store_true',
                                  help="""Downgrades a directory of perfect images and stores themas PDF files
-                                  in another location.""")
+                                   under application/data_generation/distorted_pdfs/**""")
         args_parser.add_argument("--download-pdfs",
                                  required=False,
                                  default=False,
                                  action='store_true',
-                                 help="Prompts N amount of PDF files to download from server.")
+                                 help="""Prompts N amount of PDF files to download from server and stores them
+                                    under application/data_generation/synthetic_pdfs/**""")
         args_parser.add_argument("--generate-distorted-images",
                                  required=False,
                                  default=False,
                                  action='store_true',
-                                 help="Downloads png files extracted from PDFs which show distorted images.")
+                                 help="""Downloads png files extracted from PDFs which show distorted images and
+                                    stores the under application/data_generation/generated_images/**""")
         args_parser.add_argument("--generate-perfect-images",
                                  required=False,
                                  default=False,
                                  action='store_true',
-                                 help="Downloads png files extracted from PDFs which show perfect images.")
+                                 help="""Downloads png files extracted from PDFs which show perfect images and stores
+                                    them under application/data_generation/generated_images/perfect""")
 
         return args_parser.parse_args()
 
