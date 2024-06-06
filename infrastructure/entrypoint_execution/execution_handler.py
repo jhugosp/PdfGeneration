@@ -5,6 +5,7 @@ from infrastructure.file_management.file_manager import download_pdfs
 import os
 import random
 import asyncio
+import subprocess
 
 
 class ExecutionHandler:
@@ -110,9 +111,19 @@ Press anything else to quit.\n""")
     @staticmethod
     def file_download():
         try:
+            ExecutionHandler.start_server()
+        except Exception as e:
+            print("Server is up already")
+        finally:
             asyncio.run(download_pdfs())
-        except RuntimeError:
-            print("Finished PDF saving.")
+
+    @staticmethod
+    def start_server():
+        print("Starting the server...")
+        try:
+            subprocess.run(["flask", "--app", "bancolombia.py", "run", "--debug"], check=True)
+        except subprocess.CalledProcessError as e:
+            print(f"An error occurred while running the Flask app: {e}")
 
     def check_quality(self, quality_check):
         self._image_manipulator.assess_image_quality(quality_check)
