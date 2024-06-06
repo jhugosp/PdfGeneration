@@ -112,8 +112,6 @@ Press anything else to quit.\n""")
     def file_download():
         try:
             ExecutionHandler.start_server()
-        except Exception as e:
-            print("Server is up already")
         finally:
             asyncio.run(download_pdfs())
 
