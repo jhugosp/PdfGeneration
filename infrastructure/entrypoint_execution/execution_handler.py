@@ -84,7 +84,10 @@ Press anything else to quit.\n""")
                                  type=str,
                                  help="""Path of image to enhance quality to.
                             Example:
-                            application/data_generation/generated_images/real_case/extract_1_1.png""")
+                            application/data_generation/generated_images/real_case/extract_1_1.png
+                    
+                            Stores enhanced images under: 
+                            application/data_generation/generated_images/image_enhancement/**""")
         args_parser.add_argument("--image-downgrade",
                                  required=False,
                                  default=False,
