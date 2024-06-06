@@ -121,9 +121,14 @@ Press anything else to quit.\n""")
     def start_server():
         print("Starting the server...")
         try:
-            subprocess.run(["flask", "--app", "bancolombia.py", "run", "--debug"], check=True)
+            subprocess.run(["flask", "--app", "bancolombia.py", "run", "--debug"], capture_output=True,
+                           text=True,
+                           check=True)
         except subprocess.CalledProcessError as e:
-            print(f"An error occurred while running the Flask app: {e}")
+            if "Address already in use" in e.stderr:
+                print("Server is already up")
+            else:
+                print(f"An error occurred while running the Flask app: {e.stderr}")
 
     def check_quality(self, quality_check):
         self._image_manipulator.assess_image_quality(quality_check)
