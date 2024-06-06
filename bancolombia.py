@@ -6,7 +6,6 @@ from flask import Flask
 from flask import render_template
 import jinja2
 import asyncio
-import subprocess
 
 from infrastructure.file_management.file_manager import download_pdfs
 
@@ -30,22 +29,18 @@ def return_basic_html():
                            summary=summary)
 
 
-if __name__ == "__main__":
+async def main():
     execution_handler = ExecutionHandler(ImageManipulator())
     args = execution_handler.args
 
     if args.start_server:
-        print("Starting the server...")
-        try:
-            subprocess.run(["flask", "--app", "bancolombia.py", "run", "--debug"], check=True)
-        except subprocess.CalledProcessError as e:
-            print(f"An error occurred while running the Flask app: {e}")
+        execution_handler.start_server()
     if args.quality_check:
         execution_handler.check_quality(args.quality_check)
     if args.image_enhancement:
         execution_handler.enhance_image(args.image_enhancement)
     if args.download_pdfs:
-        asyncio.run(download_pdfs())
+        await download_pdfs()
     if args.image_downgrade:
         execution_handler.downgrade_images()
     if args.generate_distorted_images:
@@ -55,3 +50,6 @@ if __name__ == "__main__":
 
     if not any(vars(args).values()):
         execution_handler.menu_printing()
+
+if __name__ == "__main__":
+    asyncio.run(main())
