@@ -1,6 +1,6 @@
 from application.data_handler.data_manager import DataManager
 from infrastructure.entrypoint_execution.execution_handler import ExecutionHandler
-from application.image_manipulation.image_transformation import ImageManipulator
+from application.image_manipulation.image_manipulator import ImageManipulator
 
 from flask import Flask
 from flask import render_template
