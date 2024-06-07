@@ -52,7 +52,7 @@ class DataManager:
         balances, transactions_values, descriptions = (
             model_templates.calculate_balance(transactions, initial_balance))
 
-        final_template_rows, total_interest = model_templates.unify_results(
+        final_template_rows, total_interest = model_templates.aggregate_rows_information(
             dates=dates,
             descriptions=descriptions,
             branches=branches,

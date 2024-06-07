@@ -184,8 +184,8 @@ class Bancolombia:
         return present_balances, values_transactions, descriptions
 
     @staticmethod
-    def unify_results(**kwargs):
-        """ Unification of results coming from the PDF information preparation function in regard to row templating
+    def aggregate_rows_information(**kwargs):
+        """ Aggregation of results coming from the PDF information preparation function in regard to row templating
             and interest calculation.
 
             :param kwargs:      Parameters received by function which, in essence, are:
