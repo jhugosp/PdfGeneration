@@ -1,6 +1,8 @@
 import argparse
 
-from application.image_manipulation.image_transformation import ImageManipulator
+from application.image_manipulation.image_manipulator import ImageManipulator
+from domain.models.enhancers.opencv_enhancer import OpencvEnhancer
+from domain.models.enhancers.pillow_enhancer import PillowEnhancer
 from infrastructure.file_management.file_manager import download_pdfs
 import os
 import random
@@ -117,6 +119,10 @@ Press anything else to quit.\n""")
 
     @staticmethod
     def file_download():
+        """ Execution of asynchronous browser PDF printing.
+
+        :return:    Nothing.
+        """
         try:
             ExecutionHandler.start_server()
         finally:
@@ -124,6 +130,10 @@ Press anything else to quit.\n""")
 
     @staticmethod
     def start_server():
+        """ Simple command line script execution which starts Flask Server
+
+        :return:    Nothing.
+        """
         print("Starting the server...")
         try:
             subprocess.run(["flask", "--app", "bancolombia.py", "run", "--debug"], capture_output=True,
@@ -136,16 +146,52 @@ Press anything else to quit.\n""")
                 print(f"An error occurred while running the Flask app: {e.stderr}")
 
     def check_quality(self, quality_check):
+        """ Checks image quality by printing blurriness, noise and sharpness.
+
+        :param quality_check:   Path of the image to check the quality to.
+        :return:                Tuple containing blurriness, noise and sharpness.
+        """
         self._image_manipulator.assess_image_quality(quality_check)
 
     def enhance_image(self, image_enhancement):
-        # Example image_path: application/data_generation/generated_images/distorted_2/extract_1_1.png
+        """ Enhances through user defined inputs, the amount of enhancements and the enhancer to use on an image.
+
+            Enhancement stores result images on:
+
+            application/data_generation/generated_images/image_enhancement/**
+
+        :param image_enhancement:       Path of image to enhance quality to. Example:
+                                        - application/data_generation/generated_images/distorted_1/extract_1_1.png
+        :return:                        Nothing.
+        """
         iterations = int(input("How many iterations would you go through? "))
+        enhancer = input("Which enhancer do you want to use? (pillow, opencv)")
         for _ in range(iterations if 0 < iterations < 10 else 5):
-            print(f"Image name: {image_enhancement}")
-            image_enhancement = self._image_manipulator.de_blur_image(image_enhancement, (_ + 1))
+            index = (_ + 1)
+            while True:
+                match enhancer:
+                    case "pillow":
+                        print(f"Pillow - Image name: {image_enhancement}")
+                        image_enhancement = self._image_manipulator.enhance_image(image_enhancement,
+                                                                                  index,
+                                                                                  PillowEnhancer())
+                        break
+                    case "opencv":
+                        print(f"OpenCV - Image name: {image_enhancement}")
+                        image_enhancement = self._image_manipulator.enhance_image(image_enhancement,
+                                                                                  index,
+                                                                                  OpencvEnhancer())
+                        break
+                    case _:
+                        print("Please enter a valid value.")
+                        enhancer = input("Which enhancer do you want to use? (pillow, opencv)")
+                        continue
 
     def downgrade_images(self):
+        """ Performs image downgrading by applying one of two filters.
+
+        :return:    Nothing.
+        """
         input_directory = 'application/data_generation/generated_images/perfect'
         for filename in os.listdir(input_directory):
             if filename.endswith('.png') or filename.endswith('.jpg') or filename.endswith('.jpeg'):
