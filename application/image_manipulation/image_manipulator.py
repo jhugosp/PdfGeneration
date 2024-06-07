@@ -1,10 +1,11 @@
-from PIL import Image, ImageFilter, ImageEnhance
+from PIL import Image, ImageFilter
 from pdf2image import convert_from_path
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 from skimage.util import img_as_float
 from skimage.restoration import estimate_sigma
 from skimage.measure import shannon_entropy
+from domain.models.enhancers.image_enhancer import ImageEnhancer
 import numpy
 import cv2
 import os
@@ -283,7 +284,7 @@ class ImageManipulator:
         return high_pass
 
     @staticmethod
-    def de_blur_image(image_path, iterations) -> str:
+    def enhance_image(image_path, iterations, image_enhancer: ImageEnhancer) -> str:
         """
         De-blurs an image using various image enhancement techniques.
 
@@ -295,7 +296,7 @@ class ImageManipulator:
         str: The file path of the de-blurred image.
 
         Functionality:
-        1. Prints the path of the distorted quality image and assesses its quality using the assess_image_quality method.
+        1. Prints the path of the distorted quality image and assesses its quality using the assess_image_quality method
         2. Reads the input image as grayscale using cv2.imread.
         3. Applies various image enhancement techniques:
            - Median blur using cv2.medianBlur.
@@ -313,41 +314,8 @@ class ImageManipulator:
         """
         print(f"Distorted quality image: {image_path}")
         ImageManipulator.assess_image_quality(image_path=image_path)
-
-        img = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
-
-        img = cv2.medianBlur(img, 3)
-        img = cv2.blur(img, (3, 3))
-        img = cv2.fastNlMeansDenoising(img, None, h=10, templateWindowSize=7, searchWindowSize=21)
-
-        img = ImageManipulator._apply_high_pass_filter(img)
-
-        sharpening_kernel = numpy.array([[-1, -1, -1, -1, -1],
-                                         [-1, 2, 2, 2, -1],
-                                         [-1, 2, 8, 2, -1],
-                                         [-1, 2, 2, 2, -1],
-                                         [-1, -1, -1, -1, -1]]) / 8.0
-
-        img = cv2.filter2D(img, -1, sharpening_kernel)
-
-        kernel = numpy.ones((2, 1), numpy.uint8)
-        img = cv2.erode(img, kernel, iterations=1)
-
-        img = Image.fromarray(img)
-
-        enhancer = ImageEnhance.Contrast(img)
-        img = enhancer.enhance(2)
-        img = img.filter(ImageFilter.SHARPEN)
-        img = img.filter(ImageFilter.UnsharpMask(radius=3, percent=150, threshold=5))
-
-        kernel = numpy.array([[-1, -2, -1],
-                              [-2, -16, -2],
-                              [-1, -2, -1]])
-
-        img = img.filter(ImageFilter.Kernel(size=(3, 3), kernel=kernel.flatten()))
-
         img_name = f"image_{iterations}"
-        img_path = f"application/data_generation/generated_images/image_enhancement/{img_name}.png"
-        img.save(fp=img_path)
+
+        img_path = image_enhancer.enhance_image(image_path, img_name)
 
         return img_path
