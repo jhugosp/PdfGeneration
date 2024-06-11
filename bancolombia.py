@@ -1,16 +1,13 @@
 from infrastructure.entrypoint_execution.execution_handler import ExecutionHandler
-from infrastructure.file_management.file_manager import download_pdf
 from application.image_manipulation.image_manipulator import ImageManipulator
 from application.data_handler.data_manager import DataManager
 from application.data_handler.dto_generator import DtoGenerator
 from domain.use_cases.entity_generation import EntityGenerator
 
 from flask import render_template, Flask
-import os
 import jinja2
 
 app = Flask(__name__)
-data_manager = DataManager()
 dto_generator = DtoGenerator(EntityGenerator())
 image_manipulator = ImageManipulator()
 
@@ -29,7 +26,7 @@ def return_basic_html():
 
 
 def main():
-    execution_handler = ExecutionHandler(ImageManipulator(), dto_generator)
+    execution_handler = ExecutionHandler(ImageManipulator(), dto_generator, DataManager())
     args = execution_handler.args
 
     if args.start_server:
@@ -39,11 +36,7 @@ def main():
     if args.image_enhancement:
         execution_handler.enhance_image(args.image_enhancement)
     if args.download_pdfs:
-        download_pdf(dto_generator=dto_generator,
-                     css_path=os.path.abspath("static/assets/fuentes.css"),
-                     background_image_path=os.path.abspath("static/assets/CtaCte_1_v1.png"),
-                     gif_path=os.path.abspath("static/assets/pxlTransp.gif"),
-                     banner_path=os.path.abspath("static/assets/IMG2024MAR_CH7258.jpeg"))()
+        execution_handler.file_download()
     if args.image_downgrade:
         execution_handler.downgrade_images()
     if args.generate_distorted_images:
