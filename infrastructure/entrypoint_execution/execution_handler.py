@@ -1,18 +1,19 @@
 import argparse
 
 from application.image_manipulation.image_manipulator import ImageManipulator
+from application.data_handler.dto_generator import DtoGenerator
+from infrastructure.file_management.file_manager import download_pdf
 from domain.models.enhancers.opencv_enhancer import OpencvEnhancer
 from domain.models.enhancers.pillow_enhancer import PillowEnhancer
-from infrastructure.file_management.file_manager import download_pdfs
 import os
 import random
-import asyncio
 import subprocess
 
 
 class ExecutionHandler:
 
-    def __init__(self, image_manipulator: ImageManipulator):
+    def __init__(self, image_manipulator: ImageManipulator, dto_generator: DtoGenerator):
+        self.dto_generator = dto_generator
         self._args = self.prepare_args_parser()
         self._image_manipulator = image_manipulator
 
@@ -117,16 +118,16 @@ Press anything else to quit.\n""")
 
         return args_parser.parse_args()
 
-    @staticmethod
-    def file_download():
+    def file_download(self):
         """ Execution of asynchronous browser PDF printing.
 
         :return:    Nothing.
         """
-        try:
-            ExecutionHandler.start_server()
-        finally:
-            asyncio.run(download_pdfs())
+        download_pdf(dto_generator=self.dto_generator,
+                     css_path=os.path.abspath("static/assets/fuentes.css"),
+                     background_image_path=os.path.abspath("static/assets/CtaCte_1_v1.png"),
+                     gif_path=os.path.abspath("static/assets/pxlTransp.gif"),
+                     banner_path=os.path.abspath("static/assets/IMG2024MAR_CH7258.jpeg"))
 
     @staticmethod
     def start_server():
