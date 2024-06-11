@@ -1,5 +1,4 @@
 from domain.models.bancolombia_model import Bancolombia
-import uuid
 import json
 
 model_templates = Bancolombia()
@@ -7,7 +6,7 @@ model_templates = Bancolombia()
 
 class DataManager:
     @staticmethod
-    def save_json_data(account_state_result, table_rows, summary):
+    def save_json_data(account_state_result, table_rows, summary, file_name):
         """ Method which saves a json data or 'metadata' of an image.
 
             :param account_state_result:    Dictionary containing information about an account state to present to client.
@@ -17,7 +16,7 @@ class DataManager:
             :return:                        Nothing
         """
         try:
-            with open(f'application/data_generation/pdfs_json_data/{uuid.uuid4().hex}.json', 'w') as f:
+            with open(f'application/data_generation/pdfs_json_data/{file_name}.json', 'w') as f:
                 json_data: dict = {
                     "summary": summary,
                     "table_rows": table_rows,
