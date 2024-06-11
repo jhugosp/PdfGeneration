@@ -121,10 +121,32 @@ def write_html_to_file(html_content, output_file_path):
 def save_pdf_from_html_file(html_file_path, pdf_file_path):
     """ Saves a PDF file from an HTML file using pdfkit.
 
+        1 inch = 96 pixels
+        1 inch = 25.4 mm
+        1 pixel = 25.4 / 96 mm ≈ 0.264583 mm
+
+        page_width_mm is the approximate conversion of px to mm: 776 pixels * 0.264583 mm/pixel ≈ 205.3 mm
+        page_height_mm is the approximate conversion of px to mm: 1010 pixels * 0.264583 mm/pixel ≈ 267.8 mm
+
+        The pixels used above are specified in the official HTML received from the bank.
+
         :param html_file_path:  Path to the HTML file.
         :param pdf_file_path:   Path to save the output PDF file.
     """
-    options = {'enable-local-file-access': ''}
+    page_width_mm = 205.3
+    page_height_mm = 267.8
+
+    options = {
+        'enable-local-file-access': '',
+        'no-pdf-compression': '',
+        'disable-smart-shrinking': '',
+        'page-width': f'{page_width_mm}mm',
+        'page-height': f'{page_height_mm}mm',
+        'margin-top': '0',
+        'margin-right': '0',
+        'margin-bottom': '0',
+        'margin-left': '0',
+    }
     pdfkit.from_file(html_file_path, pdf_file_path, options=options)
 
 
