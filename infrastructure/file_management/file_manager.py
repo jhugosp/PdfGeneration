@@ -1,4 +1,5 @@
 from application.dto.bancolombia_dto import BancolombiaDto
+from application.data_handler.data_manager import DataManager
 import jinja2
 import pdfkit
 import os
@@ -18,7 +19,8 @@ def download_pdf(**kwargs):
         :return:   Path to the generated PDF file.
     """
 
-    output_dir = "application/data_generation/synthetic_pdfs"
+    output_dir = "application/data_generation/synthetic"
+    data_manager = kwargs.get('data_manager')
     css_path = kwargs.get('css_path')
     background_image_path = kwargs.get('background_image_path')
     gif_path = kwargs.get('gif_path')
@@ -33,32 +35,50 @@ def download_pdf(**kwargs):
                              background_image_path,
                              gif_path,
                              banner_path,
-                             output_dir)
+                             output_dir,
+                             data_manager)
             break
         else:
             print("Please enter correct input\n")
             continue
 
 
-def generate_pdf(generator, css_path, background_image_path, gif_path, banner_path, output_dir):
+def generate_pdf(generator, css_path, image_path, gif_path, banner_path, output_dir, data_manager: DataManager):
     dto: BancolombiaDto = generator.generate_dto()
 
     html_content = generate_html(rows=dto.rows,
                                  summary=dto.summary,
                                  account_state=dto.account_state,
                                  css_path=css_path,
-                                 background_image_path=background_image_path,
+                                 background_image_path=image_path,
                                  gif_path=gif_path,
                                  banner_path=banner_path)
 
+    pdf_path, html_path = check_path_existence(output_dir)
+
+    file_name, index = get_last_file_name(pdf_path)
+    html_file_path = os.path.join(html_path, f"{file_name}.html")
+
+    write_html_to_file(html_content, html_file_path)
+    save_pdf_from_html_file(html_file_path, os.path.join(pdf_path, f"{file_name}.pdf"))
+
+    data_manager.save_json_data(dto.account_state, dto.rows, dto.summary, file_name)
+
+
+def check_path_existence(output_dir):
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
-    file_name, index = get_last_file_name(output_dir)
-    html_file_path = os.path.join(output_dir, f"{file_name}.html")
+    pdf_path = f"{output_dir}/pdf"
+    html_path = f"{output_dir}/html"
 
-    write_html_to_file(html_content, html_file_path)
-    save_pdf_from_html_file(html_file_path, os.path.join(output_dir, f"{file_name}.pdf"))
+    if not os.path.exists(pdf_path):
+        os.makedirs(pdf_path)
+
+    if not os.path.exists(html_path):
+        os.makedirs(html_path)
+
+    return pdf_path, html_path
 
 
 def generate_html(**kwargs):
