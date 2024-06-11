@@ -1,4 +1,3 @@
-import json
 import datetime
 import random
 
@@ -6,7 +5,50 @@ import random
 class Bancolombia:
 
     def __init__(self):
-        pass
+        self.rows, self.summary, self.account_state = self.initialize_bancolombia()
+
+    def initialize_bancolombia(self) -> tuple:
+        """ PDF information preparation function, in charge of generating:
+
+            - Dates
+            - Branches
+            - Balances and transactions operations
+            - Interest calculation
+            - Total transactions
+            - Operations summary
+            - Account state formation
+
+            :return: A tuple containing the final rows, summary and account state to present to client.
+        """
+        initial_balance = self.summary_template().get("previous_balance")
+        transactions = random.randint(5, 10)
+
+        dates = self.create_dates(transactions)
+
+        branches = self.create_branches(transactions)
+
+        balances, transactions_values, descriptions = (
+            self.calculate_balance(transactions, initial_balance))
+
+        final_template_rows, total_interest = self.aggregate_rows_information(
+            dates=dates,
+            descriptions=descriptions,
+            branches=branches,
+            balances=balances,
+            transactions_values=transactions_values,
+            transactions_amount=transactions,
+        )
+
+        final_summary = self.create_summary(
+            balances=balances,
+            transactions_values=transactions_values,
+            transactions_amount=transactions,
+            first_balance=initial_balance,
+            interests=total_interest)
+
+        final_account_state = self.create_account_state()
+
+        return final_template_rows, final_summary, final_account_state
 
     @staticmethod
     def account_state_template() -> dict:
