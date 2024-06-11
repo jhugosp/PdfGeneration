@@ -1,36 +1,35 @@
-from application.data_handler.data_manager import DataManager
 from infrastructure.entrypoint_execution.execution_handler import ExecutionHandler
+from infrastructure.file_management.file_manager import download_pdf
 from application.image_manipulation.image_manipulator import ImageManipulator
+from application.data_handler.data_manager import DataManager
+from application.data_handler.dto_generator import DtoGenerator
+from domain.use_cases.entity_generation import EntityGenerator
 
-from flask import Flask
-from flask import render_template
+from flask import render_template, Flask
+import os
 import jinja2
-import asyncio
-
-from infrastructure.file_management.file_manager import download_pdfs
 
 app = Flask(__name__)
-image_manipulator = ImageManipulator()
 data_manager = DataManager()
+dto_generator = DtoGenerator(EntityGenerator())
+image_manipulator = ImageManipulator()
 
 
 @app.get("/")
 def return_basic_html():
-    rows, summary, account_state = data_manager.prepare_pdf_information()
-    data_manager.save_json_data(account_state_result=account_state, table_rows=rows, summary=summary)
-
-    template_loader = jinja2.FileSystemLoader(searchpath="static/templates/")
+    dto = dto_generator.generate_dto()
+    template_loader = jinja2.FileSystemLoader(searchpath="templates/")
     template_env = jinja2.Environment(loader=template_loader)
     template = template_env.get_template("sample_bancolombia.html")
 
     return render_template(template,
-                           account_state=account_state,
-                           table_rows=rows,
-                           summary=summary)
+                           account_state=dto.account_state,
+                           table_rows=dto.rows,
+                           summary=dto.summary)
 
 
-async def main():
-    execution_handler = ExecutionHandler(ImageManipulator())
+def main():
+    execution_handler = ExecutionHandler(ImageManipulator(), dto_generator)
     args = execution_handler.args
 
     if args.start_server:
@@ -40,7 +39,11 @@ async def main():
     if args.image_enhancement:
         execution_handler.enhance_image(args.image_enhancement)
     if args.download_pdfs:
-        await download_pdfs()
+        download_pdf(dto_generator=dto_generator,
+                     css_path=os.path.abspath("static/assets/fuentes.css"),
+                     background_image_path=os.path.abspath("static/assets/CtaCte_1_v1.png"),
+                     gif_path=os.path.abspath("static/assets/pxlTransp.gif"),
+                     banner_path=os.path.abspath("static/assets/IMG2024MAR_CH7258.jpeg"))()
     if args.image_downgrade:
         execution_handler.downgrade_images()
     if args.generate_distorted_images:
@@ -51,5 +54,6 @@ async def main():
     if not any(vars(args).values()):
         execution_handler.menu_printing()
 
+
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()
