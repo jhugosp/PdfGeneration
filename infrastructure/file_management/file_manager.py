@@ -44,6 +44,18 @@ def download_pdf(**kwargs):
 
 
 def generate_pdf(generator, css_path, image_path, gif_path, banner_path, output_dir, data_manager: DataManager):
+    """ Generates the PDF to download by populating templates:
+
+    :param generator:       DtoGenerator which gives the data to the PDF
+    :param css_path:        Founts CSS path to look for
+    :param image_path:      Background image path to look for
+    :param gif_path:        Gif image path to look for
+    :param banner_path:     Banner image path to look for
+    :param output_dir:      Directory in which PDF files or HTML will be stored
+    :param data_manager:    Manager which saves the JSON information
+    :return:
+    """
+
     dto: BancolombiaDto = generator.generate_dto()
 
     html_content = generate_html(rows=dto.rows,
@@ -109,7 +121,15 @@ def generate_html(**kwargs):
 
 
 def write_html_to_file(html_content, output_file_path):
-    """ Writes HTML content to an HTML file.
+    """ Writes HTML content to an HTML file. Receives data such as:
+
+        - Account state of account to save.
+        - Summary of deposits, charges and interests.
+        - Transaction information rows in table.
+        - Directory to store the generated PDF file.
+        - Absolute path to the CSS file.
+        - Absolute path to the background image file.
+
 
         :param html_content:        HTML content as a string.
         :param output_file_path:    Path to save the output HTML file.
@@ -151,6 +171,11 @@ def save_pdf_from_html_file(html_file_path, pdf_file_path):
 
 
 def get_last_file_name(directory) -> tuple[str, int]:
+    """ Gets files names based on the PDFs files generated, counting existing files or new.
+
+    :param directory:   Directory in which PDF files are stored
+    :return:            Tuple containing the new name to give to a file and the index to use.
+    """
     highest_index = -1
 
     with os.scandir(directory) as entries:
