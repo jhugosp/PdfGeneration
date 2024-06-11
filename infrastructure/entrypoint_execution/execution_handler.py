@@ -9,6 +9,11 @@ import random
 import asyncio
 import subprocess
 
+from domain.models.converter.pdf_to_jpg import PDFToJPGConverter
+from domain.models.converter.pdf_to_png import PDFToPNGConverter
+from domain.models.converter.pdf_to_jpeg import PDFToJPEGConverter
+from domain.models.converter.pdf_to_tiff import PDFToTIFFConverter
+
 
 class ExecutionHandler:
 
@@ -29,7 +34,7 @@ class ExecutionHandler:
 4. Downgrade Image quality of a directory of perfect png images and generate PDFs.
 5. Generate distorted png images from a directory containing distorted PDFs.
 6. Generate perfect images from files stored from live server.
-            
+7. Download different type of images (PNG, JPG, JPEG, etc) 
 Press anything else to quit.\n""")
 
             match option:
@@ -59,6 +64,9 @@ Press anything else to quit.\n""")
                     continue
                 case "6":
                     self._image_manipulator.save_perfect_images()
+                    continue
+                case "7":
+                    self.download_different_types_of_images()
                     continue
                 case _:
                     break
@@ -210,3 +218,38 @@ Press anything else to quit.\n""")
                 self._image_manipulator.image_to_pdf(distorted_image, output_pdf_path)
 
                 print(f"Distorted PDF saved to {output_pdf_path}")
+
+    @staticmethod
+    def download_different_types_of_images():
+        image_type = input("""\nChoose the type of image to download:
+        1. PNG
+        2. TIFF
+        3. JPG
+        4. JPEG
+        Press any other key to return to the main menu.\n""")
+
+        converter_map = {
+            "1": PDFToPNGConverter(),
+            "2": PDFToTIFFConverter(),
+            "3": PDFToJPGConverter(),
+            "4": PDFToJPEGConverter()
+        }
+
+        output_folder_map = {
+            "1": "PNG",
+            "2": "TIFF",
+            "3": "JPG",
+            "4": "JPEG"
+        }
+
+        converter = converter_map.get(image_type)
+        if converter:
+            pdf_path = "application/data_generation/synthetic_pdfs"
+            base_output_folder = "application/data_generation/shyntetic_images"
+
+            output_folder = os.path.join(base_output_folder, output_folder_map.get(image_type))
+
+            converter.convert(pdf_path, output_folder)
+            print(f"{image_type} images downloaded successfully.")
+        else:
+            print("Invalid option.")
