@@ -251,7 +251,7 @@ Press anything else to quit.\n""")
 
         converter = converter_map.get(image_type)
         if converter:
-            pdf_path = "application/data_generation/synthetic_pdfs"
+            pdf_path = "application/data_generation/synthetic/pdf"
             base_output_folder = "application/data_generation/shyntetic_images"
 
             output_folder = os.path.join(base_output_folder, output_folder_map.get(image_type))
