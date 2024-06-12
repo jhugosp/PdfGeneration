@@ -1,6 +1,5 @@
 from domain.models.enhancers.image_enhancer import ImageEnhancer
 from PIL import Image, ImageFilter, ImageEnhance
-import numpy
 
 
 class PillowEnhancer(ImageEnhancer):
@@ -19,11 +18,9 @@ class PillowEnhancer(ImageEnhancer):
         img = img.filter(ImageFilter.SHARPEN)
         img = img.filter(ImageFilter.UnsharpMask(radius=3, percent=150, threshold=5))
 
-        kernel = numpy.array([[-1, -2, -1],
-                              [-2, -16, -2],
-                              [-1, -2, -1]])
+        kernel, size = super().manage_sharpening_kernel()
 
-        img = img.filter(ImageFilter.Kernel(size=(3, 3), kernel=kernel.flatten()))
+        img = img.filter(ImageFilter.Kernel(size=(size, size), kernel=kernel.flatten()))
 
         img_path = f"application/data_generation/generated_images/image_enhancement/pillow/{img_name}.png"
         img.save(fp=img_path)

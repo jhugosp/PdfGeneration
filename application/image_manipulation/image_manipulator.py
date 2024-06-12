@@ -15,7 +15,7 @@ class ImageManipulator:
 
     @staticmethod
     def save_perfect_images():
-        pdfs_path = 'application/data_generation/synthetic_pdfs'
+        pdfs_path = 'application/data_generation/synthetic/pdf'
         output_dir = 'application/data_generation/generated_images/perfect'
         pdfs_list = ImageManipulator.list_files_in_directory(pdfs_path)
         for _ in range(len(pdfs_list)):

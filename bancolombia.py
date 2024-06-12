@@ -43,6 +43,8 @@ def main():
         image_manipulator.generate_distorted_images()
     if args.generate_perfect_images:
         image_manipulator.save_perfect_images()
+    if args.download_image_format:
+        execution_handler.download_different_types_of_images()
 
     if not any(vars(args).values()):
         execution_handler.menu_printing()

@@ -131,6 +131,15 @@ Press anything else to quit.\n""")
                                  action='store_true',
                                  help="""Downloads png files extracted from PDFs which show perfect images and stores
                                     them under application/data_generation/generated_images/perfect""")
+        args_parser.add_argument("--download-image-format",
+                                 required=False,
+                                 default=False,
+                                 action='store_true',
+                                 help="""Downloads a file format specified by used based on existing perfect PDFs and
+                                    stores them under
+                                    
+                                    application/data_generation/shyntetic_images
+                                 """)
 
         return args_parser.parse_args()
 
