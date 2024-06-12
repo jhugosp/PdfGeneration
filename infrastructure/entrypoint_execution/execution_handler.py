@@ -140,6 +140,15 @@ Press anything else to quit.\n""")
                                     
                                     application/data_generation/shyntetic_images
                                  """)
+        args_parser.add_argument("--download-png-files",
+                                 required=False,
+                                 default=False,
+                                 action='store_true',
+                                 help="""Downloads a PNG format specified by used based on existing different type of 
+                                 files (PDF, JPG, JPEG)
+
+                                    application/data_generation/shyntetic_images/FILES
+                                 """)
 
         return args_parser.parse_args()
 
