@@ -32,6 +32,6 @@ class PDFToJPGConverter(PDFConverter):
                 for i, image in enumerate(images):
                     image_name = f"{os.path.splitext(filename)[0]}.jpg"
                     image_path = os.path.join(output_folder, image_name)
-                    image.save(image_path, 'JPG')
+                    image.save(image_path)
                     print(f"Saved Image: {image_name}")
 
