@@ -19,15 +19,11 @@ class OpencvEnhancer(ImageEnhancer):
         img = cv2.blur(img, (3, 3))
         img = cv2.fastNlMeansDenoising(img, None, h=10, templateWindowSize=7, searchWindowSize=21)
 
-        sharpening_kernel = numpy.array([[-1, -1, -1, -1, -1],
-                                         [-1, 2, 2, 2, -1],
-                                         [-1, 2, 8, 2, -1],
-                                         [-1, 2, 2, 2, -1],
-                                         [-1, -1, -1, -1, -1]]) / 8.0
+        sharpening_kernel, size = super().manage_sharpening_kernel()
 
         img = cv2.filter2D(img, -1, sharpening_kernel)
 
-        kernel = numpy.ones((2, 1), numpy.uint8)
+        kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3, 3))
         img = cv2.erode(img, kernel, iterations=1)
         img_path = f"application/data_generation/generated_images/image_enhancement/opencv/{img_name}.png"
         cv2.imwrite(img_path, img)
