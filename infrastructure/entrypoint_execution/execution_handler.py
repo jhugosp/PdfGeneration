@@ -15,6 +15,8 @@ from domain.models.converter.pdf_to_png import PDFToPNGConverter
 from domain.models.converter.pdf_to_jpeg import PDFToJPEGConverter
 from domain.models.converter.pdf_to_tiff import PDFToTIFFConverter
 
+from domain.models.converter.file_to_png import FileToPNGConverter
+
 
 class ExecutionHandler:
 
@@ -38,6 +40,7 @@ class ExecutionHandler:
 5. Generate distorted png images from a directory containing distorted PDFs.
 6. Generate perfect images from files stored from live server.
 7. Download different type of images (PNG, JPG, JPEG, etc) 
+8. Download PNG to different type file (PDF, JPG, JPEG)
 Press anything else to quit.\n""")
 
             match option:
@@ -70,6 +73,9 @@ Press anything else to quit.\n""")
                     continue
                 case "7":
                     self.download_different_types_of_images()
+                    continue
+                case "8":
+                    self.convert_file_to_png()
                     continue
                 case _:
                     break
@@ -260,3 +266,17 @@ Press anything else to quit.\n""")
             print(f"{image_type} images downloaded successfully.")
         else:
             print("Invalid option.")
+
+    @staticmethod
+    def convert_file_to_png():
+        converter = FileToPNGConverter()
+
+        if converter:
+            pdf_path = "application/data_generation/files"
+            base_output_folder = "application/data_generation/shyntetic_images/FILES"
+
+            converter.convert(pdf_path, base_output_folder)
+            print(f"files converted successfully.")
+        else:
+            print("Invalid option.")
+
