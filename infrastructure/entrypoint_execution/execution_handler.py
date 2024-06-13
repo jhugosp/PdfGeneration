@@ -203,8 +203,9 @@ Press anything else to quit.\n""")
                                         - application/data_generation/generated_images/distorted_1/extract_1_1.png
         :return:                        Nothing.
         """
+
         iterations = int(input("How many iterations would you go through? "))
-        enhancer = input("Which enhancer do you want to use? (pillow, opencv)")
+        enhancer = input("Which enhancer do you want to use? (pillow, opencv, both) ")
         for _ in range(iterations if 0 < iterations < 10 else 5):
             index = (_ + 1)
             while True:
@@ -221,9 +222,20 @@ Press anything else to quit.\n""")
                                                                                   index,
                                                                                   OpencvEnhancer())
                         break
+                    case "both":
+                        print(f"Combined enhancing - Image name: {image_enhancement}")
+                        image_enhancement = self._image_manipulator.enhance_image(image_enhancement,
+                                                                                  index,
+                                                                                  PillowEnhancer(),
+                                                                                  True)
+                        image_enhancement = self._image_manipulator.enhance_image(image_enhancement,
+                                                                                  index,
+                                                                                  OpencvEnhancer(),
+                                                                                  True)
+                        break
                     case _:
                         print("Please enter a valid value.")
-                        enhancer = input("Which enhancer do you want to use? (pillow, opencv)")
+                        enhancer = input("Which enhancer do you want to use? (pillow, opencv) ")
                         continue
 
     def downgrade_images(self):
