@@ -284,7 +284,7 @@ class ImageManipulator:
         return high_pass
 
     @staticmethod
-    def enhance_image(image_path, iterations, image_enhancer: ImageEnhancer) -> str:
+    def enhance_image(image_path, iterations, image_enhancer: ImageEnhancer, combined=False) -> str:
         """
         De-blurs an image using various image enhancement techniques.
 
@@ -316,6 +316,6 @@ class ImageManipulator:
         ImageManipulator.assess_image_quality(image_path=image_path)
         img_name = f"image_{iterations}"
 
-        img_path = image_enhancer.enhance_image(image_path, img_name)
+        img_path = image_enhancer.enhance_image(image_path, img_name, combined)
 
         return img_path
