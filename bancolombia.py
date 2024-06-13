@@ -45,6 +45,8 @@ def main():
         image_manipulator.save_perfect_images()
     if args.download_image_format:
         execution_handler.download_different_types_of_images()
+    if args.download_png_files:
+        execution_handler.convert_file_to_png()
 
     if not any(vars(args).values()):
         execution_handler.menu_printing()
