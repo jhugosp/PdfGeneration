@@ -1,3 +1,4 @@
+import os.path
 import random
 import numpy
 from abc import abstractmethod, ABC
@@ -8,6 +9,11 @@ class ImageEnhancer(ABC):
     @abstractmethod
     def enhance_image(self, *args):
         pass
+
+    @staticmethod
+    def check_path_existence(path):
+        if not os.path.exists(path):
+            os.mkdir(path)
 
     @staticmethod
     def manage_sharpening_kernel():
