@@ -1,11 +1,26 @@
+from domain.models.documents.base_document import BaseDocument
 import datetime
 import random
 
 
-class Bancolombia:
+class Bancolombia(BaseDocument):
 
     def __init__(self):
         self.rows, self.summary, self.account_state = self.initialize_bancolombia()
+
+        structured_data = {
+            "rows": self.rows,
+            "summary": self.summary,
+            "account_state": self.account_state
+        }
+        raw_data = {
+            "data": [
+                self.summary,
+                self.account_state,
+                self.rows
+            ]
+        }
+        super().__init__(structured_data, raw_data)
 
     def initialize_bancolombia(self) -> tuple:
         """ PDF information preparation function, in charge of generating:
@@ -49,6 +64,10 @@ class Bancolombia:
         final_account_state = self.create_account_state()
 
         return final_template_rows, final_summary, final_account_state
+
+    def run_validations(self):
+        #   Check bancolombia validations
+        pass
 
     @staticmethod
     def account_state_template() -> dict:
