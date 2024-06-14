@@ -111,7 +111,7 @@ Press anything else to quit.\n""")
                                  required=False,
                                  default=False,
                                  action='store_true',
-                                 help="""Downgrades a directory of perfect images and stores themas PDF files
+                                 help="""Downgrades a directory of perfect images and stores them as PDF files
                                    under application/data_generation/distorted_pdfs/**""")
         args_parser.add_argument("--download-pdfs",
                                  required=False,

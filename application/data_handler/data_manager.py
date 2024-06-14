@@ -1,4 +1,4 @@
-from domain.models.bancolombia_model import Bancolombia
+from domain.models.documents.bancolombia_model import Bancolombia
 import json
 
 model_templates = Bancolombia()
