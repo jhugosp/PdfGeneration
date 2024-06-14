@@ -1,9 +1,9 @@
 class BancolombiaDto:
 
     def __init__(self, rows, summary, account_state):
-        self.rows = rows
-        self.summary = summary
-        self.account_state = account_state
+        self._rows = rows
+        self._summary = summary
+        self._account_state = account_state
 
     @property
     def rows(self):
