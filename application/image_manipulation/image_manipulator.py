@@ -1,4 +1,3 @@
-from PIL import Image, ImageFilter
 from pdf2image import convert_from_path
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
@@ -12,39 +11,6 @@ import os
 
 
 class ImageManipulator:
-
-    @staticmethod
-    def save_perfect_images():
-        pdfs_path = 'application/data_generation/synthetic/pdf'
-        output_dir = 'application/data_generation/generated_images/perfect'
-        pdfs_list = ImageManipulator.list_files_in_directory(pdfs_path)
-        for _ in range(len(pdfs_list)):
-            ImageManipulator.pdf_to_png(pdf_path=f'{pdfs_path}/{pdfs_list[_]}', output_folder=output_dir, index=_)
-
-    @staticmethod
-    def distort_image(image_path, distortion_type, threshold=240):
-        """
-        Applies a specified distortion to an image.
-
-        Parameters:
-        image_path (str): The file path to the image that you want to distort.
-        distortion_type (bool): Determines the type of distortion to apply.
-                                If True, applies a Gaussian blur to the image.
-                                If False, applies a thresholding effect to the image.
-        threshold (int, optional): The threshold value for the thresholding effect.
-                                   Default is 240. This parameter is only used if distortion_type is False.
-
-        Returns:
-        PIL.Image.Image: The distorted image.
-        """
-        image = Image.open(image_path)
-        image = image.convert("L")
-        if distortion_type:
-            image = image.filter(ImageFilter.GaussianBlur(0.3))
-        else:
-            image = image.point(lambda x: 255 if x > threshold else 0)
-
-        return image
 
     @staticmethod
     def image_to_pdf(image, pdf_path):
@@ -61,6 +27,7 @@ class ImageManipulator:
         3. Draws the resized image onto the PDF canvas.
         4. Saves the Canvas, finalizing the PDF.
         """
+        #   TODO: Do not save image, pass down as byte array
         c = canvas.Canvas(pdf_path, pagesize=letter)
         width, height = letter
         # image = image.resize((width, height), Image.LANCZOS)
@@ -68,31 +35,6 @@ class ImageManipulator:
         image.save(image_path)
         c.drawImage(image_path, 0, 0, width, height)
         c.save()
-
-    @staticmethod
-    def list_files_in_directory(directory):
-        """
-        Lists all files in a directory.
-
-        Parameters:
-        directory (str): The path of the directory to list files from.
-
-        Returns:
-        list: A list of filenames present in the directory.
-
-        Functionality:
-        1. Uses os.scandir to iterate over the contents of the directory.
-        2. Filters out only the files from the directory entries.
-        3. Returns a list containing the names of the files.
-
-        Example:
-        files = list_files_in_directory("/path/to/directory")
-        print(files)
-        ['file1.txt', 'file2.jpg', 'file3.py']
-        """
-        with os.scandir(directory) as entries:
-            files = [entry.name for entry in entries if entry.is_file()]
-        return files
 
     @staticmethod
     def pdf_to_png(pdf_path, output_folder, index):
@@ -115,6 +57,7 @@ class ImageManipulator:
         Example:
         PDFProcessor.pdf_to_png("input.pdf", "output_folder", 1)
         """
+        #   TODO: Do not save image, pass down as byte array in a different format
         if not os.path.exists(output_folder):
             os.makedirs(output_folder)
 
@@ -125,35 +68,6 @@ class ImageManipulator:
             image_path = os.path.join(output_folder, image_name)
             image.save(image_path, 'PNG')
             print(f"Saved Image: {image_name}")
-
-    @staticmethod
-    def generate_distorted_images():
-        """
-        Generates distorted images from PDF files in a specified directory.
-
-        Functionality:
-        1. Prompts the user to choose a directory to consult for distorted PDF files.
-        2. Constructs the directory path based on the user's choice.
-        3. Retrieves a list of PDF files in the specified directory using ImageManipulator.list_files_in_directory
-        4. Iterates over each PDF file in the directory:
-           - Converts the PDF file to PNG images using the ImageManipulator.pdf_to_png method.
-           - Saves the generated PNG images to the 'generated_images' directory with appropriate index.
-        5. Prints a success message for each image generated.
-
-        Note:
-        - This method relies on the ImageManipulator class for listing files in a directory and converting
-        PDF to PNG images
-        """
-        consulted_dir = input("Which directory will you consult? (distorted_1/distorted_2) ")
-        dir_path = f"application/data_generation/distorted_pdfs/{consulted_dir}"
-        extracted_files: [] = ImageManipulator.list_files_in_directory(dir_path)
-        for index_file in range(len(extracted_files)):
-            ImageManipulator.pdf_to_png(
-                f'{dir_path}/{extracted_files[index_file]}',
-                f'application/data_generation/generated_images/{consulted_dir}',
-                (index_file + 1)
-            )
-            print(f"Successfully printed image: {index_file + 1}")
 
     @staticmethod
     def _calculate_blurriness(image):
@@ -261,29 +175,6 @@ class ImageManipulator:
         return blurriness, noise, sharpness
 
     @staticmethod
-    def _apply_high_pass_filter(image):
-        """
-        Applies a high-pass filter to enhance edges in an image.
-
-        Parameters:
-        image: A NumPy array representing the input image.
-
-        Returns:
-        numpy.ndarray: The image with high-pass filter applied.
-
-        Functionality:
-        1. Applies a Gaussian blur to the input image using cv2.GaussianBlur.
-        2. Computes the high-pass filter by subtracting the blurred image from the original image.
-        3. Returns the resulting image with enhanced edges.
-
-        Note:
-        - A high-pass filter enhances the edges in an image by emphasizing high-frequency components.
-        """
-        low_pass = cv2.GaussianBlur(image, (21, 21), 3)
-        high_pass = cv2.addWeighted(image, 1.5, low_pass, -0.5, 0)
-        return high_pass
-
-    @staticmethod
     def enhance_image(image_path, iterations, image_enhancer: ImageEnhancer, combined=False) -> str:
         """
         De-blurs an image using various image enhancement techniques.
@@ -315,7 +206,6 @@ class ImageManipulator:
         print(f"Distorted quality image: {image_path}")
         ImageManipulator.assess_image_quality(image_path=image_path)
         img_name = f"image_{iterations}"
-
         img_path = image_enhancer.enhance_image(image_path, img_name, combined)
 
         return img_path
