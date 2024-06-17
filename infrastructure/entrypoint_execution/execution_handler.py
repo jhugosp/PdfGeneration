@@ -3,17 +3,8 @@ import argparse
 from application.image_manipulation.image_manipulator import ImageManipulator
 from application.data_handler.dto_generator import DtoGenerator
 from application.data_handler.data_manager import DataManager
-from infrastructure.file_management.file_manager import download_pdf
 from domain.models.enhancers.opencv_enhancer import OpencvEnhancer
 from domain.models.enhancers.pillow_enhancer import PillowEnhancer
-import os
-import random
-import subprocess
-
-from domain.models.converter.pdf_to_jpg import PDFToJPGConverter
-from domain.models.converter.pdf_to_png import PDFToPNGConverter
-from domain.models.converter.pdf_to_jpeg import PDFToJPEGConverter
-from domain.models.converter.pdf_to_tiff import PDFToTIFFConverter
 
 from domain.models.converter.file_to_png import FileToPNGConverter
 
@@ -35,12 +26,8 @@ class ExecutionHandler:
             option = input("""\nPlease enter what you want to do:
 1. Check quality of a given image.
 2. Enhance quality of given image.
-3. Download x amount of PDF files from live server.
-4. Downgrade Image quality of a directory of perfect png images and generate PDFs.
-5. Generate distorted png images from a directory containing distorted PDFs.
-6. Generate perfect images from files stored from live server.
-7. Download different type of images (PNG, JPG, JPEG, etc) 
-8. Download PNG to different type file (PDF, JPG, JPEG)
+3. Consult dataset to get extracts.
+4. Convert PNG to different type file (PDF, JPG, JPEG)
 Press anything else to quit.\n""")
 
             match option:
@@ -63,18 +50,6 @@ Press anything else to quit.\n""")
                     finally:
                         continue
                 case "4":
-                    self.downgrade_images()
-                    continue
-                case "5":
-                    self._image_manipulator.generate_distorted_images()
-                    continue
-                case "6":
-                    self._image_manipulator.save_perfect_images()
-                    continue
-                case "7":
-                    self.download_different_types_of_images()
-                    continue
-                case "8":
                     self.convert_file_to_png()
                     continue
                 case _:
@@ -85,12 +60,6 @@ Press anything else to quit.\n""")
         args_parser = argparse.ArgumentParser(
             description="Script that performs image enhancement/downgrade/transformation or PDF handling and download. "
         )
-
-        args_parser.add_argument("--start-server",
-                                 required=False,
-                                 default=False,
-                                 action='store_true',
-                                 help="Simple instruction to boot live server.")
         args_parser.add_argument("--quality-check",
                                  required=False,
                                  type=str,
@@ -107,40 +76,12 @@ Press anything else to quit.\n""")
                     
                             Stores enhanced images under: 
                             application/data_generation/generated_images/image_enhancement/**""")
-        args_parser.add_argument("--image-downgrade",
+        args_parser.add_argument("--consult-dataset",
                                  required=False,
                                  default=False,
                                  action='store_true',
-                                 help="""Downgrades a directory of perfect images and stores them as PDF files
-                                   under application/data_generation/distorted_pdfs/**""")
-        args_parser.add_argument("--download-pdfs",
-                                 required=False,
-                                 default=False,
-                                 action='store_true',
-                                 help="""Prompts N amount of PDF files to download from server and stores them
-                                    under application/data_generation/synthetic_pdfs/**""")
-        args_parser.add_argument("--generate-distorted-images",
-                                 required=False,
-                                 default=False,
-                                 action='store_true',
-                                 help="""Downloads png files extracted from PDFs which show distorted images and
-                                    stores the under application/data_generation/generated_images/**""")
-        args_parser.add_argument("--generate-perfect-images",
-                                 required=False,
-                                 default=False,
-                                 action='store_true',
-                                 help="""Downloads png files extracted from PDFs which show perfect images and stores
-                                    them under application/data_generation/generated_images/perfect""")
-        args_parser.add_argument("--download-image-format",
-                                 required=False,
-                                 default=False,
-                                 action='store_true',
-                                 help="""Downloads a file format specified by used based on existing perfect PDFs and
-                                    stores them under
-                                    
-                                    application/data_generation/shyntetic_images
-                                 """)
-        args_parser.add_argument("--download-png-files",
+                                 help="""Consults the dataset in order to obtain file/s to process""")
+        args_parser.add_argument("--convert-png-files",
                                  required=False,
                                  default=False,
                                  action='store_true',
@@ -158,31 +99,10 @@ Press anything else to quit.\n""")
         :return:    Nothing.
         """
         try:
-            download_pdf(dto_generator=self.dto_generator,
-                         data_manager=self.data_manager,
-                         css_path=os.path.abspath("static/assets/fuentes.css"),
-                         background_image_path=os.path.abspath("static/assets/CtaCte_1_v1.png"),
-                         gif_path=os.path.abspath("static/assets/pxlTransp.gif"),
-                         banner_path=os.path.abspath("static/assets/IMG2024MAR_CH7258.jpeg"))
+            #   TODO: Create recipe method
+            print("Consult dataset")
         except TypeError as e:
             print(f"Something went wrong while downloading files: {e}")
-
-    @staticmethod
-    def start_server():
-        """ Simple command line script execution which starts Flask Server
-
-        :return:    Nothing.
-        """
-        print("Starting the server...")
-        try:
-            subprocess.run(["flask", "--app", "bancolombia.py", "run", "--debug"], capture_output=True,
-                           text=True,
-                           check=True)
-        except subprocess.CalledProcessError as e:
-            if "Address already in use" in e.stderr:
-                print("Server is already up")
-            else:
-                print(f"An error occurred while running the Flask app: {e.stderr}")
 
     def check_quality(self, quality_check):
         """ Checks image quality by printing blurriness, noise and sharpness.
@@ -203,7 +123,7 @@ Press anything else to quit.\n""")
                                         - application/data_generation/generated_images/distorted_1/extract_1_1.png
         :return:                        Nothing.
         """
-
+        # TODO: Validate which kernel to use from the beginning
         iterations = int(input("How many iterations would you go through? "))
         enhancer = input("Which enhancer do you want to use? (pillow, opencv, both) ")
         for _ in range(iterations if 0 < iterations < 10 else 5):
@@ -238,67 +158,10 @@ Press anything else to quit.\n""")
                         enhancer = input("Which enhancer do you want to use? (pillow, opencv) ")
                         continue
 
-    def downgrade_images(self):
-        """ Performs image downgrading by applying one of two filters.
-
-        :return:    Nothing.
-        """
-        input_directory = 'application/data_generation/generated_images/perfect'
-        for filename in os.listdir(input_directory):
-            if filename.endswith('.png') or filename.endswith('.jpg') or filename.endswith('.jpeg'):
-                distortion_type = 0.5 < random.random()
-                input_image_path = os.path.join(input_directory, filename)
-
-                if distortion_type:
-                    output_directory = "application/data_generation/distorted_pdfs/distorted_1/"
-                else:
-                    output_directory = "application/data_generation/distorted_pdfs/distorted_2/"
-
-                output_pdf_path = (
-                    os.path.join(output_directory, os.path.splitext(filename)[0] + '_distorted.pdf'))
-
-                distorted_image = self._image_manipulator.distort_image(input_image_path, distortion_type)
-                self._image_manipulator.image_to_pdf(distorted_image, output_pdf_path)
-
-                print(f"Distorted PDF saved to {output_pdf_path}")
-
-    @staticmethod
-    def download_different_types_of_images():
-        image_type = input("""\nChoose the type of image to download:
-        1. PNG
-        2. TIFF
-        3. JPG
-        4. JPEG
-        Press any other key to return to the main menu.\n""")
-
-        converter_map = {
-            "1": PDFToPNGConverter(),
-            "2": PDFToTIFFConverter(),
-            "3": PDFToJPGConverter(),
-            "4": PDFToJPEGConverter()
-        }
-
-        output_folder_map = {
-            "1": "PNG",
-            "2": "TIFF",
-            "3": "JPG",
-            "4": "JPEG"
-        }
-
-        converter = converter_map.get(image_type)
-        if converter:
-            pdf_path = "application/data_generation/synthetic/pdf"
-            base_output_folder = "application/data_generation/shyntetic_images"
-
-            output_folder = os.path.join(base_output_folder, output_folder_map.get(image_type))
-
-            converter.convert(pdf_path, output_folder)
-            print(f"{image_type} images downloaded successfully.")
-        else:
-            print("Invalid option.")
 
     @staticmethod
     def convert_file_to_png():
+        #   TODO: changed use of physical memory
         converter = FileToPNGConverter()
 
         if converter:
