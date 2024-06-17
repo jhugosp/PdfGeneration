@@ -347,5 +347,3 @@ Press anything else to quit.\n""")
         else:
             print("Invalid option.")
 
-# application/data_generation/shyntetic_images/FILES/synthetic.png
-# application/data_generation/generated_images/distorted_1/synthetic_0.png
