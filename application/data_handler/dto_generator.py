@@ -1,15 +1,14 @@
-from domain.use_cases.entity_generation import EntityGenerator
+from domain.models.documents.bancolombia_model import Bancolombia
 from application.dto.bancolombia_dto import BancolombiaDto
 
 
 class DtoGenerator:
 
-    def __init__(self, entity_generator: EntityGenerator):
-        self.entity_generator = entity_generator
+    def __init__(self):
         pass
 
-    def generate_dto(self) -> BancolombiaDto:
-        #   TODO: Generate a Dto object based on bank
-        entity = self.entity_generator.generate_entity()
-        dto = BancolombiaDto(entity.rows, entity.summary, entity.account_state)
+    def generate_dto(self, entity: Bancolombia) -> BancolombiaDto:
+        #   TODO: Generate a Dto object based on bank or generalize DTO
+        #   Provisionally uses Bancolombia DTO, will make use of entity received from infrastructure layer
+        dto = BancolombiaDto(entity.metadata, entity.code, entity.rules)
         return dto
