@@ -9,6 +9,7 @@ from domain.models.enhancers.pillow_enhancer import PillowEnhancer
 import os
 import random
 import subprocess
+from shutil import copyfile
 
 from domain.models.converter.pdf_to_jpg import PDFToJPGConverter
 from domain.models.converter.pdf_to_png import PDFToPNGConverter
@@ -37,7 +38,7 @@ class ExecutionHandler:
 2. Enhance quality of given image.
 3. Download x amount of PDF files from live server.
 4. Downgrade Image quality of a directory of perfect png images and generate PDFs.
-5. Generate distorted png images from a directory containing distorted PDFs.
+5. Generate distorted PNG images from a directory containing original PNG images.
 6. Generate perfect images from files stored from live server.
 7. Download different type of images (PNG, JPG, JPEG, etc) 
 8. Download PNG to different type file (PDF, JPG, JPEG)
@@ -193,50 +194,86 @@ Press anything else to quit.\n""")
         self._image_manipulator.assess_image_quality(quality_check)
 
     def enhance_image(self, image_enhancement):
-        """ Enhances through user defined inputs, the amount of enhancements and the enhancer to use on an image.
-
-            Enhancement stores result images on:
-
-            application/data_generation/generated_images/image_enhancement/**
-
-        :param image_enhancement:       Path of image to enhance quality to. Example:
-                                        - application/data_generation/generated_images/distorted_1/extract_1_1.png
-        :return:                        Nothing.
         """
+        Enhances the image quality based on user-defined options and stores result images.
 
+        Parameters:
+        image_enhancement (str): Path of the image to enhance.
+
+        Returns:
+        Nothing.
+        """
         iterations = int(input("How many iterations would you go through? "))
         enhancer = input("Which enhancer do you want to use? (pillow, opencv, both) ")
-        for _ in range(iterations if 0 < iterations < 10 else 5):
-            index = (_ + 1)
-            while True:
-                match enhancer:
-                    case "pillow":
-                        print(f"Pillow - Image name: {image_enhancement}")
-                        image_enhancement = self._image_manipulator.enhance_image(image_enhancement,
-                                                                                  index,
-                                                                                  PillowEnhancer())
-                        break
-                    case "opencv":
-                        print(f"OpenCV - Image name: {image_enhancement}")
-                        image_enhancement = self._image_manipulator.enhance_image(image_enhancement,
-                                                                                  index,
-                                                                                  OpencvEnhancer())
-                        break
-                    case "both":
-                        print(f"Combined enhancing - Image name: {image_enhancement}")
-                        image_enhancement = self._image_manipulator.enhance_image(image_enhancement,
-                                                                                  index,
-                                                                                  PillowEnhancer(),
-                                                                                  True)
-                        image_enhancement = self._image_manipulator.enhance_image(image_enhancement,
-                                                                                  index,
-                                                                                  OpencvEnhancer(),
-                                                                                  True)
-                        break
-                    case _:
-                        print("Please enter a valid value.")
-                        enhancer = input("Which enhancer do you want to use? (pillow, opencv) ")
-                        continue
+
+        blurriness, noise, sharpness = ImageManipulator.assess_image_quality(image_path=image_enhancement)
+
+        # Initialize output_dir
+        output_dir = None
+
+        # Define thresholds for what is considered a low quality image
+        blurriness_threshold = 1000
+        noise_threshold = 1e-10
+        sharpness_threshold = 0.5
+
+        # Check if the image needs improvement
+        if blurriness < blurriness_threshold or noise > noise_threshold or sharpness < sharpness_threshold:
+            for _ in range(iterations if 0 < iterations < 10 else 5):
+                index = (_ + 1)
+                while True:
+                    match enhancer:
+                        case "pillow":
+                            print(f"Pillow - Image name: {image_enhancement}")
+                            image_enhancement = self._image_manipulator.enhance_image(image_enhancement,
+                                                                                      index,
+                                                                                      PillowEnhancer())
+                            break
+                        case "opencv":
+                            print(f"OpenCV - Image name: {image_enhancement}")
+                            image_enhancement = self._image_manipulator.enhance_image(image_enhancement,
+                                                                                      index,
+                                                                                      OpencvEnhancer())
+                            break
+                        case "both":
+                            print(f"Combined enhancing - Image name: {image_enhancement}")
+                            image_enhancement = self._image_manipulator.enhance_image(image_enhancement,
+                                                                                      index,
+                                                                                      PillowEnhancer(),
+                                                                                      True)
+                            image_enhancement = self._image_manipulator.enhance_image(image_enhancement,
+                                                                                      index,
+                                                                                      OpencvEnhancer(),
+                                                                                      True)
+                            break
+                        case _:
+                            print("Please enter a valid value.")
+                            enhancer = input("Which enhancer do you want to use? (pillow, opencv) ")
+                            continue
+
+        else:
+            # If image does not need enhancement, make a copy to the appropriate folder
+            if enhancer == "pillow":
+                output_dir = "application/data_generation/generated_images/image_enhancement/pillow"
+            elif enhancer == "opencv":
+                output_dir = "application/data_generation/generated_images/image_enhancement/opencv"
+            elif enhancer == "both":
+                output_dir = "application/data_generation/generated_images/image_enhancement/combined"
+            else:
+                print("Invalid enhancer option.")
+
+            # Ensure the output directory exists, create it if it doesn't
+            if not os.path.exists(output_dir):
+                os.makedirs(output_dir)
+
+            # Extract the file name from image_enhancement path
+            image_name = os.path.basename(image_enhancement)
+            # Construct the full destination path
+            destination_path = os.path.join(output_dir, image_name)
+
+            # Copy the original image to the destination folder
+            copyfile(image_enhancement, destination_path)
+
+            print("Image does not need enhancement based on quality assessment.")
 
     def downgrade_images(self):
         """ Performs image downgrading by applying one of two filters.
@@ -310,3 +347,5 @@ Press anything else to quit.\n""")
         else:
             print("Invalid option.")
 
+# application/data_generation/shyntetic_images/FILES/synthetic.png
+# application/data_generation/generated_images/distorted_1/synthetic_0.png

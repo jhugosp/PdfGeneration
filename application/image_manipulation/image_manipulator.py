@@ -9,6 +9,7 @@ from domain.models.enhancers.image_enhancer import ImageEnhancer
 import numpy
 import cv2
 import os
+import random
 
 
 class ImageManipulator:
@@ -129,31 +130,47 @@ class ImageManipulator:
     @staticmethod
     def generate_distorted_images():
         """
-        Generates distorted images from PDF files in a specified directory.
+        Generates distorted images based on user input.
 
-        Functionality:
-        1. Prompts the user to choose a directory to consult for distorted PDF files.
-        2. Constructs the directory path based on the user's choice.
-        3. Retrieves a list of PDF files in the specified directory using ImageManipulator.list_files_in_directory
-        4. Iterates over each PDF file in the directory:
-           - Converts the PDF file to PNG images using the ImageManipulator.pdf_to_png method.
-           - Saves the generated PNG images to the 'generated_images' directory with appropriate index.
-        5. Prints a success message for each image generated.
+        Prompts the user to select a directory (1 for distorted_1 or 2 for distorted_2).
+        Applies the appropriate distortion to each image in the selected directory and saves the output.
 
-        Note:
-        - This method relies on the ImageManipulator class for listing files in a directory and converting
-        PDF to PNG images
+        The distortion type and output directory are determined by the user's selection.
+        If the user enters an invalid option, the function will print an error message and exit.
+
+        The distorted images are saved in the corresponding output directory.
         """
-        consulted_dir = input("Which directory will you consult? (distorted_1/distorted_2) ")
-        dir_path = f"application/data_generation/distorted_pdfs/{consulted_dir}"
-        extracted_files: [] = ImageManipulator.list_files_in_directory(dir_path)
-        for index_file in range(len(extracted_files)):
-            ImageManipulator.pdf_to_png(
-                f'{dir_path}/{extracted_files[index_file]}',
-                f'application/data_generation/generated_images/{consulted_dir}',
-                (index_file + 1)
+        option = input("Which directory will you consult? (1 for distorted_1 / 2 for distorted_2) ")
+
+        if option == "1":
+            consulted_dir = "distorted_1"
+            distortion_type = False
+        elif option == "2":
+            consulted_dir = "distorted_2"
+            distortion_type = True
+        else:
+            print("Invalid option. Please enter 1 or 2.")
+            return
+
+        # Directory where the original images are located
+        dir_path = os.path.abspath("application/data_generation/shyntetic_images/PNG")
+        print(f"Absolute path: {dir_path}")
+        # Directory where the distorted images will be saved
+        output_dir = f"application/data_generation/generated_images/{consulted_dir}"
+
+        if not os.path.exists(output_dir):
+            os.makedirs(output_dir)
+            print(f"Created directory: {output_dir}")
+
+        extracted_files = ImageManipulator.list_files_in_directory(dir_path)
+        for file_name in extracted_files:
+            image_path = os.path.join(dir_path, file_name)
+            distorted_image = ImageManipulator.distort_image(
+                image_path,
+                distortion_type
             )
-            print(f"Successfully printed image: {index_file + 1}")
+            output_path = os.path.join(output_dir, file_name)
+            distorted_image.save(output_path)
 
     @staticmethod
     def _calculate_blurriness(image):
@@ -312,10 +329,10 @@ class ImageManipulator:
         Note:
         - This method applies multiple image enhancement techniques iteratively to de-blur the input image.
         """
-        print(f"Distorted quality image: {image_path}")
-        ImageManipulator.assess_image_quality(image_path=image_path)
         img_name = f"image_{iterations}"
 
         img_path = image_enhancer.enhance_image(image_path, img_name, combined)
+        print(f"Distorted quality image: {img_path}")
+        ImageManipulator.assess_image_quality(image_path=img_path)
 
         return img_path
