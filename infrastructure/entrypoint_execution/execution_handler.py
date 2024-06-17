@@ -2,7 +2,6 @@ import argparse
 
 from application.image_manipulation.image_manipulator import ImageManipulator
 from application.data_handler.dto_generator import DtoGenerator
-from application.data_handler.data_manager import DataManager
 from domain.models.enhancers.opencv_enhancer import OpencvEnhancer
 from domain.models.enhancers.pillow_enhancer import PillowEnhancer
 
@@ -11,9 +10,8 @@ from domain.models.converter.file_to_png import FileToPNGConverter
 
 class ExecutionHandler:
 
-    def __init__(self, image_manipulator: ImageManipulator, dto_generator: DtoGenerator, data_manager: DataManager):
+    def __init__(self, image_manipulator: ImageManipulator, dto_generator: DtoGenerator):
         self.dto_generator = dto_generator
-        self.data_manager = data_manager
         self._args = self.prepare_args_parser()
         self._image_manipulator = image_manipulator
 
