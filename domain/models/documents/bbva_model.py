@@ -1,7 +1,7 @@
 from domain.models.documents.base_document import BaseDocument
 
 
-class Bancolombia(BaseDocument):
+class Bbva(BaseDocument):
 
     def __init__(self):
         self.rows, self.summary, self.account_state = "rows", "summary", "account"
@@ -26,7 +26,7 @@ class Bancolombia(BaseDocument):
         return self._rules
 
     def run_validations(self):
-        #   Check bancolombia validations
+        #   Check banco BBVA validations
         pass
 
     def load_rules(self):
