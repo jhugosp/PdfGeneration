@@ -99,7 +99,7 @@ Press anything else to quit.\n""")
         :return:    Nothing.
         """
         try:
-            #   TODO: Create recipe method
+            #   TODO: Create recipe consult method
             print("Consult dataset")
         except TypeError as e:
             print(f"Something went wrong while downloading files: {e}")
@@ -158,7 +158,6 @@ Press anything else to quit.\n""")
                         enhancer = input("Which enhancer do you want to use? (pillow, opencv) ")
                         continue
 
-
     @staticmethod
     def convert_file_to_png():
         #   TODO: changed use of physical memory
@@ -172,4 +171,3 @@ Press anything else to quit.\n""")
             print(f"files converted successfully.")
         else:
             print("Invalid option.")
-
