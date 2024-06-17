@@ -12,39 +12,16 @@ dto_generator = DtoGenerator(EntityGenerator())
 image_manipulator = ImageManipulator()
 
 
-@app.get("/")
-def return_basic_html():
-    dto = dto_generator.generate_dto()
-    template_loader = jinja2.FileSystemLoader(searchpath="templates/")
-    template_env = jinja2.Environment(loader=template_loader)
-    template = template_env.get_template("sample_bancolombia.html")
-
-    return render_template(template,
-                           account_state=dto.account_state,
-                           table_rows=dto.rows,
-                           summary=dto.summary)
-
-
 def main():
     execution_handler = ExecutionHandler(ImageManipulator(), dto_generator, DataManager())
     args = execution_handler.args
 
-    if args.start_server:
-        execution_handler.start_server()
     if args.quality_check:
         execution_handler.check_quality(args.quality_check)
     if args.image_enhancement:
         execution_handler.enhance_image(args.image_enhancement)
     if args.download_pdfs:
         execution_handler.file_download()
-    if args.image_downgrade:
-        execution_handler.downgrade_images()
-    if args.generate_distorted_images:
-        image_manipulator.generate_distorted_images()
-    if args.generate_perfect_images:
-        image_manipulator.save_perfect_images()
-    if args.download_image_format:
-        execution_handler.download_different_types_of_images()
     if args.download_png_files:
         execution_handler.convert_file_to_png()
 
