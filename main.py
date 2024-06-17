@@ -1,12 +1,9 @@
-from infrastructure.entrypoint_execution.execution_handler import ExecutionHandler
+from infrastructure.entrypoint.execution_handler import ExecutionHandler
 from application.image_manipulation.image_manipulator import ImageManipulator
 from application.data_handler.dto_generator import DtoGenerator
 from domain.use_cases.entity_generation import EntityGenerator
 
-from flask import Flask
 
-app = Flask(__name__)
-#   TODO: generate controller to consult documents based on banks
 dto_generator = DtoGenerator(EntityGenerator())
 image_manipulator = ImageManipulator()
 
@@ -19,9 +16,9 @@ def main():
         execution_handler.check_quality(args.quality_check)
     if args.image_enhancement:
         execution_handler.enhance_image(args.image_enhancement)
-    if args.download_pdfs:
+    if args.consult_dataset:
         execution_handler.file_download()
-    if args.download_png_files:
+    if args.convert_png_files:
         execution_handler.convert_file_to_png()
 
     if not any(vars(args).values()):
