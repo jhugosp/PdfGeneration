@@ -3,23 +3,11 @@ from domain.models.documents.base_document import BaseDocument
 
 class Bancolombia(BaseDocument):
 
-    def __init__(self):
-        self.rows, self.summary, self.account_state = "rows", "summary", "account"
+    def __init__(self, code):
         self._rules = self.load_rules()
+        structured, raw = self._prepare_properties()
 
-        structured_data = {
-            "rows": self.rows,
-            "summary": self.summary,
-            "account_state": self.account_state
-        }
-        raw_data = {
-            "data": [
-                self.summary,
-                self.account_state,
-                self.rows
-            ]
-        }
-        super().__init__(structured_data, raw_data)
+        super().__init__(structured, raw, code)
 
     @property
     def rules(self):
@@ -32,3 +20,18 @@ class Bancolombia(BaseDocument):
     def load_rules(self):
         #  TODO: consult dataset, retrieve document
         return []  # Init rules
+
+    def _prepare_properties(self):
+        structured_data = {
+            "filed1": "something1",
+            "field2": "something2",
+            "field3": "something3"
+        }
+        raw_data = {
+            "data": [
+                "something1",
+                "something2",
+                "something3"
+            ]
+        }
+        return structured_data, raw_data

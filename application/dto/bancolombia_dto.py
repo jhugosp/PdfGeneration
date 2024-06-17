@@ -1,30 +1,18 @@
 class BancolombiaDto:
 
-    def __init__(self, rows, summary, account_state):
-        self._rows = rows
-        self._summary = summary
-        self._account_state = account_state
+    def __init__(self, metadata, code, rules):
+        self._metadata = metadata
+        self._code = code
+        self._rules = rules
 
     @property
-    def rows(self):
-        return self._rows
-
-    @rows.setter
-    def rows(self, value):
-        self._rows = value
+    def code(self):
+        return self._code
 
     @property
-    def summary(self):
-        return self._summary
-
-    @summary.setter
-    def summary(self, value):
-        self._summary = value
+    def metadata(self):
+        return self._metadata
 
     @property
-    def account_state(self):
-        return self._account_state
-
-    @account_state.setter
-    def account_state(self, value):
-        self._account_state = value
+    def rules(self):
+        return self._rules
