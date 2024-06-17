@@ -7,4 +7,5 @@ class EntityGenerator:
 
     @staticmethod
     def generate_entity():
+        #  TODO: correctly generate document based on bank
         return Bancolombia()  # Need to unify with abstract class

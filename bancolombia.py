@@ -4,10 +4,10 @@ from application.data_handler.data_manager import DataManager
 from application.data_handler.dto_generator import DtoGenerator
 from domain.use_cases.entity_generation import EntityGenerator
 
-from flask import render_template, Flask
-import jinja2
+from flask import Flask
 
 app = Flask(__name__)
+#   TODO: generate controller to consult documents based on banks
 dto_generator = DtoGenerator(EntityGenerator())
 image_manipulator = ImageManipulator()
 
