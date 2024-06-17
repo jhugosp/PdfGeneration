@@ -14,6 +14,7 @@ class BaseDocument:
         return self._config
 
     def load_rules(self):
+        #  TODO: consult dataset, retrieve document
         return []  # Init rules
 
     def run_validations(self):
