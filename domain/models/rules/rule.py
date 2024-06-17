@@ -1,9 +1,8 @@
-from abc import ABC, abstractmethod
 from domain.models.result import Result
 from domain.models.documents.base_document import BaseDocument
 
 
-class Rule(ABC):
+class Rule():
 
     def __init__(self, document: BaseDocument, prompt, rule_type, rule_id, comments, version, status, description):
         self._document = document
@@ -56,14 +55,19 @@ class Rule(ABC):
     def result(self, result: Result):
         self._result = result
 
-    @abstractmethod
     def validate(self):
         pass
 
-    @abstractmethod
     def validate_by_prompt(self):
         pass
 
-    @abstractmethod
-    def prepare_prompt(self):
+    def validate_by_code(self):
+        pass
+
+    def prepare_prompt_input(self):
+        # TODO: create input based on received parameters coming from rules DB
+        pass
+
+    def process_prompt_response(self):
+        # TODO: Manage response to create report
         pass
