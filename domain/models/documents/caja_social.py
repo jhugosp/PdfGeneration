@@ -1,7 +1,7 @@
 from domain.models.documents.base_document import BaseDocument
 
 
-class Bbva(BaseDocument):
+class CajaSocial(BaseDocument):
 
     def __init__(self, code):
         self._rules = self.load_rules()
