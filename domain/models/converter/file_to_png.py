@@ -17,6 +17,8 @@ class FileToPNGConverter(PDFConverter):
             input_folder (str): The path to the folder containing the files to be converted.
             output_folder (str): The path to the folder where the PNG images will be saved.
         """
+        #   TODO: validate conversion but not saving of file, return as byte array
+
         # Check if the output folder exists, if not, create it
         if not os.path.exists(output_folder):
             os.makedirs(output_folder)

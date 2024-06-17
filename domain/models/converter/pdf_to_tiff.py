@@ -15,6 +15,7 @@ class PDFToTIFFConverter(PDFConverter):
              pdf_path (str): The path to the folder containing the PDF files to be converted.
              output_folder (str): The path to the folder where the TIFF images will be saved.
          """
+        #   TODO: validate conversion but not saving of file, return as byte array
         if not os.path.exists(output_folder):
             os.makedirs(output_folder)
 
