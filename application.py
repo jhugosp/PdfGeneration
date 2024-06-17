@@ -1,6 +1,5 @@
 from infrastructure.entrypoint_execution.execution_handler import ExecutionHandler
 from application.image_manipulation.image_manipulator import ImageManipulator
-from application.data_handler.data_manager import DataManager
 from application.data_handler.dto_generator import DtoGenerator
 from domain.use_cases.entity_generation import EntityGenerator
 
@@ -13,7 +12,7 @@ image_manipulator = ImageManipulator()
 
 
 def main():
-    execution_handler = ExecutionHandler(ImageManipulator(), dto_generator, DataManager())
+    execution_handler = ExecutionHandler(ImageManipulator(), dto_generator)
     args = execution_handler.args
 
     if args.quality_check:
