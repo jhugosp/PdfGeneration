@@ -13,6 +13,8 @@ class PillowEnhancer(ImageEnhancer):
         :param img_name:    The name which we will save the image under.
         :return:            Image path, in order to continue following enhancements.
         """
+        #   TODO: Choose which kernel to use
+        #   TODO: Do not save image, pass down as byte array
         img = Image.open(fp=image_path)
         enhancer = ImageEnhance.Contrast(img)
         img = enhancer.enhance(2)

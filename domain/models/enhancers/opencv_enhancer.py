@@ -14,6 +14,8 @@ class OpencvEnhancer(ImageEnhancer):
         :param img_name:    The name which we will save the image under.
         :return:            Image path, in order to continue following enhancements.
         """
+        #   TODO: Choose which kernel to use
+        #   TODO: Do not save image, pass down as byte array
         img = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
 
         augmentations = A.Compose([
