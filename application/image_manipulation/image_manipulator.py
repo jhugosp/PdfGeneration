@@ -43,7 +43,11 @@ class ImageManipulator:
         if distortion_type:
             image = image.filter(ImageFilter.GaussianBlur(0.3))
         else:
-            image = image.point(lambda x: 255 if x > threshold else 0)
+            def noisy_threshold(x):
+                noise = random.randint(-30, 30)
+                return 255 if x + noise > threshold else 0
+
+            image = image.point(noisy_threshold)
 
         return image
 
