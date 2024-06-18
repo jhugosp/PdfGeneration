@@ -3,6 +3,11 @@ class BaseDocument:
         self._code = code
         self._structured_meta = structured_meta
         self._raw_meta = raw_meta
+        self._rules = []
+
+    @property
+    def rules(self):
+        return self._rules
 
     @property
     def code(self):
