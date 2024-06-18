@@ -8,6 +8,6 @@ class BancolombiaRepository(Repository):
         super().__init__()
 
     def get_one(self, code):
-        #  TODO: Replace this with DB instance and query
+        #  TODO: Replace this with API Calling querying bancolombia information
         entity = Bancolombia(code)
         return entity
