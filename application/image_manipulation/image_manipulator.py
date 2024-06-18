@@ -202,10 +202,10 @@ class ImageManipulator:
         Note:
         - This method applies multiple image enhancement techniques iteratively to de-blur the input image.
         """
-        print(f"Distorted quality image: {image_path}")
-        ImageManipulator.assess_image_quality(image_path=image_path)
         img_name = f"image_{iterations}"
 
         img_path = image_enhancer.enhance_image(image_path, img_name, combined)
+        print(f"Distorted quality image: {img_path}")
+        ImageManipulator.assess_image_quality(image_path=img_path)
 
         return img_path
