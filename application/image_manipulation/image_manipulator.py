@@ -27,7 +27,6 @@ class ImageManipulator:
         3. Draws the resized image onto the PDF canvas.
         4. Saves the Canvas, finalizing the PDF.
         """
-        #   TODO: Do not save image, pass down as byte array
         c = canvas.Canvas(pdf_path, pagesize=letter)
         width, height = letter
         # image = image.resize((width, height), Image.LANCZOS)
@@ -206,6 +205,7 @@ class ImageManipulator:
         print(f"Distorted quality image: {image_path}")
         ImageManipulator.assess_image_quality(image_path=image_path)
         img_name = f"image_{iterations}"
+
         img_path = image_enhancer.enhance_image(image_path, img_name, combined)
 
         return img_path
