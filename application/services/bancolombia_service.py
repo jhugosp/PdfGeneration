@@ -7,5 +7,5 @@ class BancolombiaService:
         self._dto_generator = dto_generator
         self._repository = repository
 
-    def get_one(self, doc_code):
-        return self._dto_generator.generate_dto(self._repository.get_one(doc_code))
+    def get_one(self, doc_code, bank_type):
+        return self._dto_generator.generate_dto(self._repository.get_one(doc_code), bank_type)
