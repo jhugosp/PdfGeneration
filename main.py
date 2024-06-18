@@ -1,10 +1,9 @@
 from infrastructure.entrypoint.execution_handler import ExecutionHandler
 from application.image_manipulation.image_manipulator import ImageManipulator
 from application.data_handler.dto_generator import DtoGenerator
-from domain.use_cases.entity_generation import EntityGenerator
 
 
-dto_generator = DtoGenerator(EntityGenerator())
+dto_generator = DtoGenerator()
 image_manipulator = ImageManipulator()
 
 
