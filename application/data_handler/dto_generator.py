@@ -1,3 +1,5 @@
+from typing import Type
+
 from domain.models.documents.base_document import BaseDocument
 from domain.models.banks.banks_types import Banks
 from application.dto.bancolombia_dto import BancolombiaDto
@@ -10,23 +12,23 @@ from application.dto.banco_bogota_dto import BancoBogotaDto
 class DtoGenerator:
 
     def __init__(self):
-        pass
+        self._type_mapping = {
+            Banks.BANCOLOMBIA.value: BancolombiaDto,
+            Banks.BBVA.value: BbvaDto,
+            Banks.COLPATRIA.value: ColpatriaDto,
+            Banks.CAJA_SOCIAL.value: CajaSocialDto,
+            Banks.BANCO_BOGOTA.value: BancoBogotaDto
+        }
 
-    def generate_dto(self, entity: BaseDocument, bank_type: Banks):
+    def _get_dto_class(self, bank_type: str):
+        try:
+            return self._type_mapping.get(bank_type)
+        except KeyError:
+            raise ValueError(f"Bank type {bank_type} is not valid")
+
+    def generate_dto(self, entity: BaseDocument, bank_type: str):
         #   TODO: Generate a Dto object based on bank or generalize DTO
-        dto = None
-        match bank_type:
-            case Banks.BANCOLOMBIA:
-                dto = BancolombiaDto(entity.metadata, entity.code, entity.rules)
-            case Banks.BBVA:
-                dto = BbvaDto(entity.metadata, entity.code, entity.rules)
-            case Banks.COLPATRIA:
-                dto = ColpatriaDto(entity.metadata, entity.code, entity.rules)
-            case Banks.CAJA_SOCIAL:
-                dto = CajaSocialDto(entity.metadata, entity.code, entity.rules)
-            case Banks.BANCO_BOGOTA:
-                dto = BancoBogotaDto(entity.metadata, entity.code, entity.rules)
-            case _:
-                print("Bank not valid")
+        dto_class = self._get_dto_class(bank_type)
+        dto = dto_class(entity.metadata, entity.code, entity.rules)
 
         return dto
