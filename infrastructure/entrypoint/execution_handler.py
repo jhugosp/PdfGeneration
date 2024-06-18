@@ -19,86 +19,44 @@ class ExecutionHandler:
     def args(self):
         return self._args
 
-    def menu_printing(self):
-        while True:
-            option = input("""\nPlease enter what you want to do:
-1. Check quality of a given image.
-2. Enhance quality of given image.
-3. Consult dataset to get extracts.
-4. Convert PNG to different type file (PDF, JPG, JPEG)
-Press anything else to quit.\n""")
-
-            match option:
-
-                case "1":
-                    # Example image_path: application/data_generation/generated_images/real_case/extract_1_1.png
-                    image_path = input("Enter path to check image quality: ")
-                    self.check_quality(image_path)
-                    continue
-                case "2":
-                    # Example image_path: application/data_generation/generated_images/real_case/extract_1_1.png
-                    image_path = input("Enter path to check image quality: ")
-                    self.enhance_image(image_path)
-                    continue
-                case "3":
-                    try:
-                        self.file_download()
-                    except Exception as ex:
-                        print(f"Something went wrong: {ex}")
-                    finally:
-                        continue
-                case "4":
-                    self.convert_file_to_png()
-                    continue
-                case _:
-                    break
-
     @staticmethod
     def prepare_args_parser():
         args_parser = argparse.ArgumentParser(
-            description="Script that performs image enhancement/downgrade/transformation or PDF handling and download. "
+            description="Script that performs image enhancement/transformation in multiple formats to PNG. ",
+            formatter_class=argparse.RawTextHelpFormatter
         )
-        args_parser.add_argument("--quality-check",
-                                 required=False,
-                                 type=str,
-                                 help="""Path of image to check quality to. 
-                            Example:
-                            application/data_generation/generated_images/real_case/extract_1_1.png
-                            """)
-        args_parser.add_argument("--image-enhancement",
-                                 required=False,
-                                 type=str,
-                                 help="""Path of image to enhance quality to.
-                            Example:
-                            application/data_generation/generated_images/real_case/extract_1_1.png
-                    
-                            Stores enhanced images under: 
-                            application/data_generation/generated_images/image_enhancement/**""")
-        args_parser.add_argument("--consult-dataset",
-                                 required=False,
-                                 default=False,
-                                 action='store_true',
-                                 help="""Consults the dataset in order to obtain file/s to process""")
-        args_parser.add_argument("--convert-png-files",
-                                 required=False,
-                                 default=False,
-                                 action='store_true',
-                                 help="""Downloads a PNG format specified by used based on existing different type of 
-                                 files (PDF, JPG, JPEG)
-
-                                    application/data_generation/shyntetic_images/FILES
-                                 """)
+        args_parser.add_argument("-c", "--consult-dataset",
+                                 required=True,
+                                 type=int,
+                                 nargs="+",
+                                 help="""Consults the dataset in order to obtain file/s to process.
+Receives document IDs (Integer value)""")
+        args_parser.add_argument("-b", "--bank",
+                                 required=True,
+                                 help="""Indicates which Bank's document and rules are going to be worked on.
+                                         
+ Banks are: 
+ 
+ - bancolombia 
+ - banco-bogota 
+ - bbva 
+ - colpatria 
+ - caja-social""")
 
         return args_parser.parse_args()
 
-    def file_download(self):
+    @staticmethod
+    def consult_dataset(document_id, bank, service):
         """ Execution of asynchronous browser PDF printing.
 
         :return:    Nothing.
         """
         try:
             #   TODO: Create recipe consult method
-            print("Consult dataset")
+            result = None
+            if len(document_id) == 1:
+                result = service.get_one(document_id[0], bank)
+            print(f"{result.code} - {result.metadata} - {result.rules} \nbank is: {bank}")
         except TypeError as e:
             print(f"Something went wrong while downloading files: {e}")
 
