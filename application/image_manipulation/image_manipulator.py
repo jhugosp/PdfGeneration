@@ -5,6 +5,7 @@ from skimage.util import img_as_float
 from skimage.restoration import estimate_sigma
 from skimage.measure import shannon_entropy
 from domain.models.enhancers.image_enhancer import ImageEnhancer
+from PIL import Image
 import numpy
 import cv2
 import os
@@ -140,7 +141,7 @@ class ImageManipulator:
         return sharpness
 
     @staticmethod
-    def assess_image_quality(image_path):
+    def assess_image_quality(image):
         """
         Assess the quality of the image based on blurriness, noise, and sharpness.
 
@@ -161,7 +162,11 @@ class ImageManipulator:
         Note:
         - The quality of the image can be assessed based on the calculated blurriness, noise, and sharpness values.
         """
-        image = cv2.imread(image_path)
+        if isinstance(image, Image.Image):
+            image = cv2.cvtColor(numpy.array(image), cv2.COLOR_RGB2GRAY)
+        elif isinstance(image, numpy.ndarray):
+            if image.ndim == 3:
+                image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
         blurriness = ImageManipulator._calculate_blurriness(image)
         noise = ImageManipulator._estimate_noise(image)
@@ -174,7 +179,7 @@ class ImageManipulator:
         return blurriness, noise, sharpness
 
     @staticmethod
-    def enhance_image(image_path, iterations, image_enhancer: ImageEnhancer, combined=False) -> str:
+    def enhance_image(image_path, iterations, image_enhancer: ImageEnhancer, kernel_option, combined=False) -> str:
         """
         De-blurs an image using various image enhancement techniques.
 
@@ -202,10 +207,8 @@ class ImageManipulator:
         Note:
         - This method applies multiple image enhancement techniques iteratively to de-blur the input image.
         """
-        img_name = f"image_{iterations}"
+        kernel, size = ImageEnhancer.manage_sharpening_kernel(kernel_option)
+        img = image_enhancer.enhance_image(image_path, kernel, size, combined)
+        ImageManipulator.assess_image_quality(img)
 
-        img_path = image_enhancer.enhance_image(image_path, img_name, combined)
-        print(f"Distorted quality image: {img_path}")
-        ImageManipulator.assess_image_quality(image_path=img_path)
-
-        return img_path
+        return img
