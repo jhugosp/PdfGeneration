@@ -84,9 +84,10 @@ Receives document IDs (Integer value)""")
                                         - application/data_generation/generated_images/distorted_1/extract_1_1.png
         :return:                        Nothing.
         """
-        # TODO: Validate which kernel to use from the beginning
+        # TODO: refactor implementation to obtain image differently than from path file. Validate how they come.
         iterations = int(input("How many iterations would you go through? "))
         enhancer = input("Which enhancer do you want to use? (pillow, opencv, both) ")
+        kernel = input("Which kernel do you want to use? (simple, detailed)")
         for _ in range(iterations if 0 < iterations < 10 else 5):
             index = (_ + 1)
             while True:
@@ -95,23 +96,27 @@ Receives document IDs (Integer value)""")
                         print(f"Pillow - Image name: {image_enhancement}")
                         image_enhancement = self._image_manipulator.enhance_image(image_enhancement,
                                                                                   index,
-                                                                                  PillowEnhancer())
+                                                                                  PillowEnhancer(),
+                                                                                  kernel)
                         break
                     case "opencv":
                         print(f"OpenCV - Image name: {image_enhancement}")
                         image_enhancement = self._image_manipulator.enhance_image(image_enhancement,
                                                                                   index,
-                                                                                  OpencvEnhancer())
+                                                                                  OpencvEnhancer(),
+                                                                                  kernel)
                         break
                     case "both":
                         print(f"Combined enhancing - Image name: {image_enhancement}")
                         image_enhancement = self._image_manipulator.enhance_image(image_enhancement,
                                                                                   index,
                                                                                   PillowEnhancer(),
+                                                                                  kernel,
                                                                                   True)
                         image_enhancement = self._image_manipulator.enhance_image(image_enhancement,
                                                                                   index,
                                                                                   OpencvEnhancer(),
+                                                                                  kernel,
                                                                                   True)
                         break
                     case _:
