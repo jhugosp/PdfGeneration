@@ -17,25 +17,33 @@ from infrastructure.repository.colpatria_repository import ColpatriaRepository
 dto_generator = DtoGenerator()
 
 
+def retrieve_bank_service(bank):
+    match bank:
+        case Banks.BANCOLOMBIA.value:
+            return BancolombiaService(dto_generator, BancolombiaRepository())
+        case Banks.BBVA.value:
+            return BbvaService(dto_generator, BbvaRepository())
+        case Banks.COLPATRIA.value:
+            return ColpatriaService(dto_generator, ColpatriaRepository())
+        case Banks.CAJA_SOCIAL.value:
+            return CajaSocialService(dto_generator, CajaSocialRepository())
+        case Banks.BANCO_BOGOTA.value:
+            return BancoBogotaService(dto_generator, BancoBogotaRepository())
+        case _:
+            return None
+
+
 def main():
     execution_handler = ExecutionHandler(ImageManipulator(), dto_generator)
     args = execution_handler.args
 
     if args.consult_dataset and args.bank:
-        service = None
-        match args.bank:
-            case Banks.BANCOLOMBIA.value:
-                service = BancolombiaService(dto_generator, BancolombiaRepository())
-            case Banks.BBVA.value:
-                service = BbvaService(dto_generator, BbvaRepository())
-            case Banks.COLPATRIA.value:
-                service = ColpatriaService(dto_generator, ColpatriaRepository())
-            case Banks.CAJA_SOCIAL.value:
-                service = CajaSocialService(dto_generator, CajaSocialRepository())
-            case Banks.BANCO_BOGOTA.value:
-                service = BancoBogotaService(dto_generator, BancoBogotaRepository())
-
+        service = retrieve_bank_service(args.bank)
         execution_handler.consult_dataset(args.consult_dataset, args.bank, service)
+
+    if args.bank and args.all:
+        service = retrieve_bank_service(args.bank)
+        execution_handler.consult_dataset([], args.bank, service)
 
 
 if __name__ == "__main__":
