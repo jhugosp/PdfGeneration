@@ -36,13 +36,12 @@ def retrieve_bank_service(bank):
 def main():
     execution_handler = ExecutionHandler(ImageManipulator(), dto_generator)
     args = execution_handler.args
+    service = retrieve_bank_service(args.bank)
 
-    if args.consult_dataset and args.bank:
-        service = retrieve_bank_service(args.bank)
+    if args.consult_dataset:
         execution_handler.consult_dataset(args.consult_dataset, args.bank, service)
 
-    if args.bank and args.all:
-        service = retrieve_bank_service(args.bank)
+    if args.all:
         execution_handler.consult_dataset([], args.bank, service)
 
 
