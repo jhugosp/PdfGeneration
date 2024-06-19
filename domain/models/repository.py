@@ -5,5 +5,8 @@ class Repository:
     def get_one(self, doc_id):
         pass
 
+    def get_multiple(self, docs_id):
+        pass
+
     def get_all(self):
         pass

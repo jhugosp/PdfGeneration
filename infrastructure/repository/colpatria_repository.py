@@ -10,3 +10,7 @@ class ColpatriaRepository(Repository):
         #  TODO: Replace this with API Calling querying colpatria information
         entity = Colpatria(code)
         return entity
+
+    def get_multiple(self, docs_id):
+        entities = [Colpatria(code) for code in docs_id]
+        return entities

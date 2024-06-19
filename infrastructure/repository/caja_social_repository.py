@@ -10,3 +10,7 @@ class CajaSocialRepository(Repository):
         #  TODO: Replace this with API Calling querying caja_social information
         entity = CajaSocial(code)
         return entity
+
+    def get_multiple(self, docs_id):
+        entities = [CajaSocial(code) for code in docs_id]
+        return entities

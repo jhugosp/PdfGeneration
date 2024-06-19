@@ -10,3 +10,7 @@ class BbvaRepository(Repository):
         #  TODO: Replace this with API Calling querying bbva information
         entity = Bbva(code)
         return entity
+
+    def get_multiple(self, docs_id):
+        entities = [Bbva(code) for code in docs_id]
+        return entities

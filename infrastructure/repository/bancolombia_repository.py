@@ -11,3 +11,7 @@ class BancolombiaRepository(Repository):
         #  TODO: Replace this with API Calling querying bancolombia information
         entity = Bancolombia(code)
         return entity
+
+    def get_multiple(self, docs_id):
+        entities = [Bancolombia(code) for code in docs_id]
+        return entities
