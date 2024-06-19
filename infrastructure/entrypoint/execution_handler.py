@@ -26,11 +26,16 @@ class ExecutionHandler:
             formatter_class=argparse.RawTextHelpFormatter
         )
         args_parser.add_argument("-c", "--consult-dataset",
-                                 required=True,
+                                 required=False,
                                  type=int,
                                  nargs="+",
                                  help="""Consults the dataset in order to obtain file/s to process.
 Receives document IDs (Integer value)""")
+        args_parser.add_argument("-a", "--all",
+                                 required=False,
+                                 default=False,
+                                 action='store_true',
+                                 help="""Consults all documents from a bank""")
         args_parser.add_argument("-b", "--bank",
                                  required=True,
                                  help="""Indicates which Bank's document and rules are going to be worked on.
@@ -46,7 +51,7 @@ Receives document IDs (Integer value)""")
         return args_parser.parse_args()
 
     @staticmethod
-    def consult_dataset(document_id, bank, service):
+    def consult_dataset(document_id: list, bank, service):
         """ Execution of asynchronous browser PDF printing.
 
         :return:    Nothing.
@@ -54,7 +59,10 @@ Receives document IDs (Integer value)""")
         try:
             #   TODO: Create recipe consult method, pass down
             result = None
-            if len(document_id) == 1:
+            if len(document_id) == 0:
+                result = service.get_all(bank)
+                print(f"Retrieved all: {result}")
+            elif len(document_id) == 1:
                 result = service.get_one(document_id[0], bank)
                 print(f"{result.code} - {result.metadata} - {result.rules} \nbank is: {bank}")
             elif len(document_id) > 1:
