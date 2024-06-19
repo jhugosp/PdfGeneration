@@ -5,17 +5,16 @@ import cv2
 
 class OpencvEnhancer(ImageEnhancer):
 
-    def enhance_image(self, image_path, img_name, combined=False):
+    def enhance_image(self, image_path, kernel, size, combined=False):
         """ Enhances image by using opencv - cv2 library through using various methods such as sharpening, denoising,
             blurring and 2D filtering.
 
+        :param size:
+        :param kernel:
         :param combined:    Indication if the image in case was pre-processed by Pillow as well, changing store path.
-        :param image_path:  Path in which we find the image
-        :param img_name:    The name which we will save the image under.
+        :param image_path:  Path in which we find the image.
         :return:            Image path, in order to continue following enhancements.
         """
-        #   TODO: Choose which kernel to use
-        #   TODO: Do not save image, pass down as byte array
         img = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
 
         augmentations = A.Compose([
@@ -29,20 +28,10 @@ class OpencvEnhancer(ImageEnhancer):
         img = cv2.GaussianBlur(img, (3, 3), 0)
         img = cv2.fastNlMeansDenoising(img, None, h=10, templateWindowSize=7, searchWindowSize=21)
 
-        sharpening_kernel, size = super().manage_sharpening_kernel()
-
-        img = cv2.filter2D(img, -1, sharpening_kernel)
+        img = cv2.filter2D(img, -1, kernel)
 
         kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3, 3))
         img = cv2.erode(img, kernel, iterations=1)
         img = cv2.dilate(img, kernel, iterations=1)
-        if combined:
-            img_prefix = f"application/data_generation/generated_images/image_enhancement/combined"
-        else:
-            img_prefix = f"application/data_generation/generated_images/image_enhancement/opencv"
-
-        super().check_path_existence(img_prefix)
-        img_path = f"{img_prefix}/{img_name}.png"
-        cv2.imwrite(img_path, img)
-
-        return img_path
+        cv2.imshow("", img)
+        return img
