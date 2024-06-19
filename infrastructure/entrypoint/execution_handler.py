@@ -56,7 +56,12 @@ Receives document IDs (Integer value)""")
             result = None
             if len(document_id) == 1:
                 result = service.get_one(document_id[0], bank)
-            print(f"{result.code} - {result.metadata} - {result.rules} \nbank is: {bank}")
+                print(f"{result.code} - {result.metadata} - {result.rules} \nbank is: {bank}")
+            elif len(document_id) > 1:
+                result = service.get_multiple(document_id, bank)
+                for index in result:
+                    print(f"{index.code} - {index.metadata} - {index.rules} \nbank is: {bank}")
+
         except TypeError as e:
             print(f"Something went wrong while downloading files: {e}")
 
