@@ -52,7 +52,7 @@ Receives document IDs (Integer value)""")
         :return:    Nothing.
         """
         try:
-            #   TODO: Create recipe consult method
+            #   TODO: Create recipe consult method, pass down
             result = None
             if len(document_id) == 1:
                 result = service.get_one(document_id[0], bank)
@@ -64,14 +64,6 @@ Receives document IDs (Integer value)""")
 
         except TypeError as e:
             print(f"Something went wrong while downloading files: {e}")
-
-    def check_quality(self, quality_check):
-        """ Checks image quality by printing blurriness, noise and sharpness.
-
-        :param quality_check:   Path of the image to check the quality to.
-        :return:                Tuple containing blurriness, noise and sharpness.
-        """
-        self._image_manipulator.assess_image_quality(quality_check)
 
     def enhance_image(self, image_enhancement):
         """ Enhances through user defined inputs, the amount of enhancements and the enhancer to use on an image.
@@ -88,41 +80,51 @@ Receives document IDs (Integer value)""")
         iterations = int(input("How many iterations would you go through? "))
         enhancer = input("Which enhancer do you want to use? (pillow, opencv, both) ")
         kernel = input("Which kernel do you want to use? (simple, detailed)")
-        for _ in range(iterations if 0 < iterations < 10 else 5):
-            index = (_ + 1)
-            while True:
-                match enhancer:
-                    case "pillow":
-                        print(f"Pillow - Image name: {image_enhancement}")
-                        image_enhancement = self._image_manipulator.enhance_image(image_enhancement,
-                                                                                  index,
-                                                                                  PillowEnhancer(),
-                                                                                  kernel)
-                        break
-                    case "opencv":
-                        print(f"OpenCV - Image name: {image_enhancement}")
-                        image_enhancement = self._image_manipulator.enhance_image(image_enhancement,
-                                                                                  index,
-                                                                                  OpencvEnhancer(),
-                                                                                  kernel)
-                        break
-                    case "both":
-                        print(f"Combined enhancing - Image name: {image_enhancement}")
-                        image_enhancement = self._image_manipulator.enhance_image(image_enhancement,
-                                                                                  index,
-                                                                                  PillowEnhancer(),
-                                                                                  kernel,
-                                                                                  True)
-                        image_enhancement = self._image_manipulator.enhance_image(image_enhancement,
-                                                                                  index,
-                                                                                  OpencvEnhancer(),
-                                                                                  kernel,
-                                                                                  True)
-                        break
-                    case _:
-                        print("Please enter a valid value.")
-                        enhancer = input("Which enhancer do you want to use? (pillow, opencv) ")
-                        continue
+
+        blurriness, noise, sharpness = self._image_manipulator.assess_image_quality(image=image_enhancement)
+
+        # Define thresholds for what is considered a low quality image
+        blurriness_threshold = 1000
+        noise_threshold = 1e-10
+        sharpness_threshold = 0.5
+        if blurriness < blurriness_threshold or noise > noise_threshold or sharpness < sharpness_threshold:
+            for _ in range(iterations if 0 < iterations < 10 else 5):
+                index = (_ + 1)
+                while True:
+                    match enhancer:
+                        case "pillow":
+                            print(f"Pillow - Image name: {image_enhancement}")
+                            image_enhancement = self._image_manipulator.enhance_image(image_enhancement,
+                                                                                      index,
+                                                                                      PillowEnhancer(),
+                                                                                      kernel)
+                            break
+                        case "opencv":
+                            print(f"OpenCV - Image name: {image_enhancement}")
+                            image_enhancement = self._image_manipulator.enhance_image(image_enhancement,
+                                                                                      index,
+                                                                                      OpencvEnhancer(),
+                                                                                      kernel)
+                            break
+                        case "both":
+                            print(f"Combined enhancing - Image name: {image_enhancement}")
+                            image_enhancement = self._image_manipulator.enhance_image(image_enhancement,
+                                                                                      index,
+                                                                                      PillowEnhancer(),
+                                                                                      kernel,
+                                                                                      True)
+                            image_enhancement = self._image_manipulator.enhance_image(image_enhancement,
+                                                                                      index,
+                                                                                      OpencvEnhancer(),
+                                                                                      kernel,
+                                                                                      True)
+                            break
+                        case _:
+                            print("Please enter a valid value.")
+                            enhancer = input("Which enhancer do you want to use? (pillow, opencv) ")
+                            continue
+        else:
+            print(f"Image: {image_enhancement} - Should be able to be processed as is.")
 
     @staticmethod
     def convert_file_to_png():
