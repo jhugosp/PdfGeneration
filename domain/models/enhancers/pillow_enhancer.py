@@ -14,7 +14,7 @@ class PillowEnhancer(ImageEnhancer):
         :param image_path:  Path in which we find the image.
         :return:            Image path, in order to continue following enhancements.
         """
-        img = Image.open(fp=image_path)
+        img = Image.open(fp=image_path).convert("L")
         enhancer = ImageEnhance.Contrast(img)
         img = enhancer.enhance(2)
         img = img.filter(ImageFilter.SHARPEN)
