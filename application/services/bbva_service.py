@@ -16,3 +16,10 @@ class BbvaService(Service):
         for entity in entities:
             result.append(self._dto_generator.generate_dto(entity, bank_type))
         return result
+
+    def get_all(self, bank_type):
+        entities = self._repository.get_all()
+        result = []
+        for entity in entities:
+            result.append(self._dto_generator.generate_dto(entity, bank_type))
+        return result
