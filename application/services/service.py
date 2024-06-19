@@ -12,3 +12,6 @@ class Service:
 
     def get_all(self, bank_type):
         pass
+
+    def get_multiple(self, doc_codes, bank_type):
+        pass
