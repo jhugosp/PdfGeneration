@@ -14,3 +14,7 @@ class BbvaRepository(Repository):
     def get_multiple(self, docs_id):
         entities = [Bbva(code) for code in docs_id]
         return entities
+
+    def get_all(self):
+        entities = [Bbva(code) for code in range(10)]
+        return entities

@@ -14,3 +14,7 @@ class ColpatriaRepository(Repository):
     def get_multiple(self, docs_id):
         entities = [Colpatria(code) for code in docs_id]
         return entities
+
+    def get_all(self):
+        entities = [Colpatria(code) for code in range(10)]
+        return entities

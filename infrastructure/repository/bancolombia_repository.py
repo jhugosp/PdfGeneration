@@ -15,3 +15,7 @@ class BancolombiaRepository(Repository):
     def get_multiple(self, docs_id):
         entities = [Bancolombia(code) for code in docs_id]
         return entities
+
+    def get_all(self):
+        entities = [Bancolombia(code) for code in range(10)]
+        return entities
