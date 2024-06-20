@@ -14,29 +14,6 @@ import os
 class ImageManipulator:
 
     @staticmethod
-    def image_to_pdf(image, pdf_path):
-        """
-        Converts an image to a PDF and saves it to the specified path.
-
-        Parameters:
-        image (PIL.Image.Image): The image object to convert to PDF.
-        pdf_path (str): The file path where the generated PDF should be saved.
-
-        Functionality:
-        1. Creates a Canvas object for PDF generation.
-        2. Resizes the image to fit the dimensions of the letter-sized page.
-        3. Draws the resized image onto the PDF canvas.
-        4. Saves the Canvas, finalizing the PDF.
-        """
-        c = canvas.Canvas(pdf_path, pagesize=letter)
-        width, height = letter
-        # image = image.resize((width, height), Image.LANCZOS)
-        image_path = 'temp_image.jpg'
-        image.save(image_path)
-        c.drawImage(image_path, 0, 0, width, height)
-        c.save()
-
-    @staticmethod
     def pdf_to_png(pdf_path, output_folder, index):
         """
         Converts a PDF file to PNG images and saves them to the specified output folder.
@@ -62,12 +39,12 @@ class ImageManipulator:
             os.makedirs(output_folder)
 
         images = convert_from_path(pdf_path)
-
+        pages = []
         for i, image in enumerate(images):
             image_name = f"extract_{i + 1}_{index}.png"
-            image_path = os.path.join(output_folder, image_name)
-            image.save(image_path, 'PNG')
-            print(f"Saved Image: {image_name}")
+            image.show(image_name)
+            pages.append(image)
+        return pages
 
     @staticmethod
     def _calculate_blurriness(image):
@@ -146,7 +123,7 @@ class ImageManipulator:
         Assess the quality of the image based on blurriness, noise, and sharpness.
 
         Parameters:
-        image_path (str): The file path of the image to assess.
+        image: The image file to assess.
 
         Returns:
         tuple: A tuple containing the calculated blurriness, noise, and sharpness values.
@@ -179,16 +156,15 @@ class ImageManipulator:
         return blurriness, noise, sharpness
 
     @staticmethod
-    def enhance_image(image_path, iterations, image_enhancer: ImageEnhancer, kernel_option, combined=False) -> str:
+    def enhance_image(image, image_enhancer: ImageEnhancer, kernel_option, combined=False) -> str:
         """
-        De-blurs an image using various image enhancement techniques.
+        Enhances an image using various image enhancement techniques.
 
         Parameters:
-        image_path (str): The file path of the input image.
-        iterations (int): The number of iterations for applying enhancement techniques.
+        image: The input image.
 
         Returns:
-        str: The file path of the de-blurred image.
+        str: The file enhanced image.
 
         Functionality:
         1. Prints the path of the distorted quality image and assesses its quality using the assess_image_quality method
@@ -197,18 +173,16 @@ class ImageManipulator:
            - Median blur using cv2.medianBlur.
            - Average blur using cv2.blur.
            - Non-local means denoising using cv2.fastNlMeansDenoising.
-           - High-pass filter using the _apply_high_pass_filter method.
            - Sharpening using a custom sharpening kernel with cv2.filter2D.
            - Erosion using cv2.erode.
            - Contrast enhancement and sharpening using PIL ImageEnhance and ImageFilter.
            - Convolution with a custom kernel using PIL ImageFilter.Kernel.
-        4. Saves the de-blurred image with the specified number of iterations.
 
         Note:
         - This method applies multiple image enhancement techniques iteratively to de-blur the input image.
         """
         kernel, size = ImageEnhancer.manage_sharpening_kernel(kernel_option)
-        img = image_enhancer.enhance_image(image_path, kernel, size, combined)
+        img = image_enhancer.enhance_image(image, kernel, size, combined)
         ImageManipulator.assess_image_quality(img)
 
         return img
