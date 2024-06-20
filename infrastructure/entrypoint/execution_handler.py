@@ -41,7 +41,7 @@ class ExecutionHandler:
 
         return args_parser.parse_args()
 
-    def process_images(self, bank, service):
+    def process_doc_data(self, bank, service):
         """ Execution of asynchronous browser PDF printing.
 
         :return:    Nothing.
@@ -89,32 +89,27 @@ class ExecutionHandler:
         sharpness_threshold = 0.5
         if blurriness < blurriness_threshold or noise > noise_threshold or sharpness < sharpness_threshold:
             for _ in range(iterations if 0 < iterations < 10 else 5):
-                index = (_ + 1)
                 while True:
                     match enhancer:
                         case "pillow":
                             print(f"Pillow - Image name: {image_enhancement}")
                             image_enhancement = self._image_manipulator.enhance_image(image_enhancement,
-                                                                                      index,
                                                                                       PillowEnhancer(),
                                                                                       kernel)
                             break
                         case "opencv":
                             print(f"OpenCV - Image name: {image_enhancement}")
                             image_enhancement = self._image_manipulator.enhance_image(image_enhancement,
-                                                                                      index,
                                                                                       OpencvEnhancer(),
                                                                                       kernel)
                             break
                         case "both":
                             print(f"Combined enhancing - Image name: {image_enhancement}")
                             image_enhancement = self._image_manipulator.enhance_image(image_enhancement,
-                                                                                      index,
                                                                                       PillowEnhancer(),
                                                                                       kernel,
                                                                                       True)
                             image_enhancement = self._image_manipulator.enhance_image(image_enhancement,
-                                                                                      index,
                                                                                       OpencvEnhancer(),
                                                                                       kernel,
                                                                                       True)
@@ -205,4 +200,3 @@ class ExecutionHandler:
                 },
             ]
         }
-

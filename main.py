@@ -38,7 +38,7 @@ def main():
     args = execution_handler.args
     service = retrieve_bank_service(args.bank)
 
-    execution_handler.process_images(args.bank, service)
+    execution_handler.process_doc_data(args.bank, service)
 
 
 if __name__ == "__main__":
