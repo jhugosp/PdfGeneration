@@ -8,5 +8,5 @@ class ColpatriaRepository(Repository):
     def get_one(self, structured, raw, code, rules, bank):
         return super().get_one(structured, raw, code, rules, bank)
 
-    def get_multiple(self, structured, raw, docs_id, rules, bank):
-        return super().get_multiple(structured, raw, docs_id, rules, bank)
+    def get_multiple(self, documents, bank):
+        return super().get_multiple(documents, bank)

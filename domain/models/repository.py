@@ -16,10 +16,15 @@ class Repository:
             entity = BaseDocument(structured, raw, code, rules, bank)
         return entity
 
-    def get_multiple(self, structured, raw, docs_id, rules, bank):
+    def get_multiple(self, documents, bank):
         entities = []
         if self.__validate_bank_type(bank):
-            entities = [BaseDocument(structured, raw, code, rules, bank) for code in docs_id]
+            entities = [BaseDocument(
+                document.get("structured"),
+                document.get("raw"),
+                document.get("code"),
+                document.get("rules"),
+                bank) for document in documents]
         return entities
 
     def __validate_bank_type(self, bank):
