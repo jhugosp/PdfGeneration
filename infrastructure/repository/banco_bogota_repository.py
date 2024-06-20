@@ -1,20 +1,17 @@
-from domain.models.documents.banco_bogota_model import BancoBogota
+from domain.models.documents.base_document import BaseDocument
 from domain.models.repository import Repository
+from domain.models.banks.banks_types import Banks
 
 
 class BancoBogotaRepository(Repository):
     def __init__(self):
         super().__init__()
 
-    def get_one(self, code):
+    def get_one(self, structured, raw, code, rules):
         #  TODO: Replace this with API Calling querying b_bogota information
-        entity = BancoBogota(code)
+        entity = BaseDocument(structured, raw, code, rules, Banks.BANCO_BOGOTA.value)
         return entity
 
-    def get_multiple(self, docs_id):
-        entities = [BancoBogota(code) for code in docs_id]
-        return entities
-
-    def get_all(self):
-        entities = [BancoBogota(code) for code in range(10)]
+    def get_multiple(self, structured, raw, docs_id, rules):
+        entities = [BaseDocument(structured, raw, code, rules, Banks.BANCO_BOGOTA.value) for code in docs_id]
         return entities

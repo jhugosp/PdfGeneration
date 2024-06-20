@@ -2,11 +2,8 @@ class Repository:
     def __init__(self):
         pass
 
-    def get_one(self, doc_id):
+    def get_one(self, structured, raw, code, rules):
         pass
 
-    def get_multiple(self, docs_id):
-        pass
-
-    def get_all(self):
+    def get_multiple(self, structured, raw, code, rules):
         pass
