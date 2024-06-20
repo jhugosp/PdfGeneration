@@ -38,11 +38,7 @@ def main():
     args = execution_handler.args
     service = retrieve_bank_service(args.bank)
 
-    if args.consult_dataset:
-        execution_handler.consult_dataset(args.consult_dataset, args.bank, service)
-
-    if args.all:
-        execution_handler.consult_dataset([], args.bank, service)
+    execution_handler.process_images(args.bank, service)
 
 
 if __name__ == "__main__":

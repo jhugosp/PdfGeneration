@@ -1,5 +1,7 @@
 import argparse
+import random
 
+from random import randrange
 from application.image_manipulation.image_manipulator import ImageManipulator
 from application.data_handler.dto_generator import DtoGenerator
 from domain.models.enhancers.opencv_enhancer import OpencvEnhancer
@@ -25,17 +27,6 @@ class ExecutionHandler:
             description="Script that performs image enhancement/transformation in multiple formats to PNG. ",
             formatter_class=argparse.RawTextHelpFormatter
         )
-        args_parser.add_argument("-c", "--consult-dataset",
-                                 required=False,
-                                 type=int,
-                                 nargs="+",
-                                 help="""Consults the dataset in order to obtain file/s to process.
-Receives document IDs (Integer value)""")
-        args_parser.add_argument("-a", "--all",
-                                 required=False,
-                                 default=False,
-                                 action='store_true',
-                                 help="""Consults all documents from a bank""")
         args_parser.add_argument("-b", "--bank",
                                  required=True,
                                  help="""Indicates which Bank's document and rules are going to be worked on.
@@ -50,8 +41,7 @@ Receives document IDs (Integer value)""")
 
         return args_parser.parse_args()
 
-    @staticmethod
-    def consult_dataset(document_id: list, bank, service):
+    def process_images(self, bank, service):
         """ Execution of asynchronous browser PDF printing.
 
         :return:    Nothing.
@@ -59,16 +49,18 @@ Receives document IDs (Integer value)""")
         try:
             #   TODO: Create recipe consult method, pass down
             result = None
-            if len(document_id) == 0:
-                result = service.get_all(bank)
-                print(f"Retrieved all: {result}")
-            elif len(document_id) == 1:
-                result = service.get_one(document_id[0], bank)
-                print(f"{result.code} - {result.metadata} - {result.rules} \nbank is: {bank}")
-            elif len(document_id) > 1:
-                result = service.get_multiple(document_id, bank)
-                for index in result:
-                    print(f"{index.code} - {index.metadata} - {index.rules} \nbank is: {bank}")
+            documents = self.give_documents_mock()
+            if len(documents) == 1:
+                result = service.get_one(documents[0].get("structured"),
+                                         documents[0].get("raw"),
+                                         documents[0].get("code"),
+                                         documents[0].get("rules"),
+                                         bank)
+                print(f"Code: {result.code}  \nMetadata:{result.metadata} \nRules:{result.rules} \nbank is: {bank}")
+            elif len(documents) > 1:
+                result = service.get_multiple(documents, bank)
+                for aux in result:
+                    print(f"Code: {aux.code}  \nMetadata:{aux.metadata} \nRules:{aux.rules} \nbank is: {bank}")
 
         except TypeError as e:
             print(f"Something went wrong while downloading files: {e}")
@@ -147,3 +139,70 @@ Receives document IDs (Integer value)""")
             print(f"files converted successfully.")
         else:
             print("Invalid option.")
+
+    def give_documents_mock(self):
+        documents = []
+        for index in range(randrange(1, 5)):
+            documents.append({
+                "structured": self.give_structured(),
+                "raw": {},
+                "code": random.randint(0, 100),
+                "rules": []
+            })
+        return documents
+
+    @staticmethod
+    def give_structured():
+        return {
+            "banco": "Bancolombia",
+            "cliente": {
+                "nombre": "Luis Garcia",
+                "direccion": "CL 45",
+                "barrio": "CL 45",
+                "ciudad": "CL 45",
+            },
+            "cuenta": {
+                "numero": "",
+                "tipo": "",
+                "origen": {
+                    "codigo": "",
+                    "nombre": "Bogota"
+                },
+            },
+            "extracto": {
+                "fecha": {
+                    "desde": "",
+                    "hasta": "",
+                }
+            },
+            "resumen": {
+                "saldo_inicial": "",
+                "abonos": {
+                    "cantidad": "",
+                    "valor": "",
+                },
+                "cargos": {
+                    "cantidad": "",
+                    "valor": "",
+                },
+                "iva": "",
+                "gmf": "",
+                "retencion": "",
+                "intereses": "",
+                "saldo_final": "",
+            },
+            "movimientos": [
+                {
+                    "tipo": "(cargo/abono/intereses/otros… en caso de ser posible)",
+                    "fecha": "",
+                    "codigo": "",
+                    "descripcion": "",
+                    "ciudad": "",
+                    "oficina": "",
+                    "documento": "",
+                    "valor": "",
+                    "saldo": "",
+                },
+            ]
+        }
+
