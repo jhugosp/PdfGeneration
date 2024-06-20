@@ -1,4 +1,5 @@
-class CajaSocialDto:
+class DocumentDto:
+
     def __init__(self, metadata, code, rules):
         self._metadata = metadata
         self._code = code
