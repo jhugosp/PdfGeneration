@@ -10,5 +10,5 @@ class Service:
     def get_one(self, structured, raw, doc_code, rules, bank_type):
         pass
 
-    def get_multiple(self, structured, raw, doc_codes, rules, bank_type):
+    def get_multiple(self, documents, bank_type):
         pass

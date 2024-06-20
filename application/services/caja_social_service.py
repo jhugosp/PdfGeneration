@@ -10,8 +10,8 @@ class CajaSocialService(Service):
     def get_one(self, structured, raw, doc_code, rules, bank_type):
         return self._dto_generator.generate_dto(self._repository.get_one(structured, raw, doc_code, rules, bank_type))
 
-    def get_multiple(self, structured, raw, doc_codes, rules, bank_type):
-        entities = self._repository.get_multiple(structured, raw, doc_codes, rules, bank_type)
+    def get_multiple(self, documents, bank_type):
+        entities = self._repository.get_multiple(documents, bank_type)
         result = []
         for entity in entities:
             result.append(self._dto_generator.generate_dto(entity))
